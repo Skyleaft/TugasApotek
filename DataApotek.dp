@@ -1,0 +1,12 @@
+[Project]
+FileName=E:\Repository\Pascal\DataApotek.dp
+Name=DataApotek
+MainUnit=E:\Repository\Pascal\UDataApotek.pas
+UnitCount=1
+ResFiles=E:\Repository\Pascal\rsrc.rc
+NoConsole=0
+IsDll=0
+Icon=C:\Dev-Pas\bin\Mainicon.ico
+[Unit1]
+FileName=E:\Repository\Pascal\UDataApotek.pas
+FileTime=1319590203
