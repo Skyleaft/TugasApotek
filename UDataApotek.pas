@@ -14,13 +14,6 @@ const
      kiri=#75;
      kanan=#77;
 type
-    TObat=record
-                id_obat:string;
-                nama:string;
-                harga:integer;
-                stok:integer;
-    end;
-
     TAnggota=record
                    id_anggota:string;
                    nama:string;
@@ -48,14 +41,36 @@ type
                     no_tlp:string;
     end;
 
+    Obat=record
+                id_obat:string;
+                nama_obat:string;
+                harga:integer;
+                jenis:string;
+                stok:integer;
+    end;
+//deklarasi double linkedlist
+    //DObat=Obat;
+    PDataObat=^TDataObat;
+    TDataObat=record
+                    info:Obat;
+                    next,prev:PDataObat;
+     end;
+//----------------------------------------------------------------------------------------------------------------------
+
     data_menu=array[1..maks_menu] of string;
 
+
+
+
 var
+
    data_anggota:Array[1..maks] of TAnggota;
    data_pinjaman:Array[1..maksPinjaman] of TPinjaman;
    Tmenu:data_menu;
    bd,bdpinjam,pil:integer;
    YYYY,MM,DD : Word;
+
+
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -110,25 +125,80 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+procedure penciptaan(var awal,akhir:PDataObat);
+begin
+     awal:=nil;
+     akhir:=nil;
+end;
+
+
+
 //----------------------------------------------------------------------------------------------------------------------
-//TAMBAH ANGGOTA
+//tambah data obat
 //----------------------------------------------------------------------------------------------------------------------
-procedure tambah_Anggota;
+
+procedure tambahdepanobat(var awal,akhir:PDataObat;data:Obat);
+var
+   baru:PDataObat;
+begin
+     new(baru);
+     baru^.info:=data;
+     baru^.next:=nil;
+     baru^.prev:=nil;
+     if awal=nil then
+     begin
+          awal:=baru;
+          akhir:=baru;
+     end
+     else
+     begin
+          baru^.next:=awal;
+          awal^.prev:=baru;
+          awal:=baru;
+     end;
+end;
+//----------------------------------------------------------------------------------------------------------------------
+
+
+procedure tampil(awal,akhir:PDataObat);
+var
+   bantu:PDataObat;
+begin
+     write('Data : [');
+     bantu:=awal;
+     while bantu<>nil do
+     begin
+          write(bantu^.info);
+          bantu:=bantu^.next;
+     end;
+     writeln(']');
+end;
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//TAMBAH OBAT
+//----------------------------------------------------------------------------------------------------------------------
+procedure tambah_Obat;
+var
+   //Sid_obat:Obat.id_obat;
+   //Snama_obat:Obat.nama_obat;
 begin
      clrscr;
      bersihin;
-     if bd<maks then
-     begin
           kotak(4,50,2,20,BLUE,WHITE,'Tambah Data Anggota');
           pemisah(4,50,4);
 
-          bd:=bd+1;
-          gotoxy(6,5);writeln('Masukan Data Anggota Ke-',bd);
-          gotoxy(6,6);write('Kode Anggota : ');readln(data_anggota[bd].id_anggota);
-          gotoxy(6,7);write('Nama Anggota : ');readln(data_anggota[bd].nama);
-          gotoxy(6,8);write('Alamat       : ');readln(data_anggota[bd].alamat);
-          gotoxy(6,9);write('No Telepon   : ');readln(data_anggota[bd].no_telp);
-          gotoxy(6,10);write('pekerjaan    : ');readln(data_anggota[bd].pekerjaan);
+          gotoxy(6,5);writeln('Masukan Data Obat ');
+          //gotoxy(6,6);write('id Obat    : ');readln(Sid_obat);
+          //gotoxy(6,7);write('Nama Obat  : ');readln(Snama_obat);
+          //gotoxy(6,8);write('Jenis      : ');readln(Sjenis);
+          //gotoxy(6,9);write('Harga      : ');readln(Sharga);
+          //gotoxy(6,10);write('Stok      : ');readln(Sstok);
           gotoxy(6,12);write('Data berhasil Disimpan');
 
 
@@ -848,17 +918,17 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 procedure isi_menu;
 begin
-     Tmenu[1]:=' 1. Tambah Data Anggota        ';
-     Tmenu[2]:=' 2. Tampilkan Data Anggota     ';
-     Tmenu[3]:=' 3. Pengurutan Data Anggota    ';
-     Tmenu[4]:=' 4. Pencarian Data Anggota     ';
-     Tmenu[5]:=' 5. Ubah Data Anggota          ';
-     Tmenu[6]:=' 6. Hapus Data Anggota         ';
-     Tmenu[7]:=' 7. Simpanan                   ';
-     Tmenu[8]:=' 8. Pinjaman                   ';
-     Tmenu[9]:=' 9. Penarikan Saldo            ';
-     Tmenu[10]:=' 10. Tampilkan Data Pinjaman  ';
-     Tmenu[11]:=' 11. Simpan Kedalam File      ';
+     Tmenu[1]:=' 1. Tambah Obat       ';
+     Tmenu[2]:=' 2.      ';
+     Tmenu[3]:=' 3.     ';
+     Tmenu[4]:=' 4.      ';
+     Tmenu[5]:=' 5.          ';
+     Tmenu[6]:=' 6.          ';
+     Tmenu[7]:=' 7.                   ';
+     Tmenu[8]:=' 8.                  ';
+     Tmenu[9]:=' 9.             ';
+     Tmenu[10]:=' 10.  ';
+     Tmenu[11]:=' 11.       ';
      Tmenu[12]:=' 12. Keluar                   ';
 end;
 
@@ -886,7 +956,7 @@ end;
 procedure buka_menu(t:integer);
 begin
      case t of
-          1:tambah_Anggota;
+          1:tambah_Obat;
           2:tampil_dataAnggota;
           3:pengurutan_Anggota;
           4:pencarian_Anggota;
