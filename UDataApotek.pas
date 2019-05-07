@@ -38,6 +38,14 @@ type
                    bunga:real;
                    total:real;
                    angsuran:real;
+                   end;
+    TKaryawan=record
+                    id_karyawan:string;
+                    nama_karyawan:string;
+                    jk:string;
+                    tgl_lahir:string;
+                    alamat:string;
+                    no_tlp:string;
     end;
 
     data_menu=array[1..maks_menu] of string;
