@@ -24,7 +24,7 @@ begin
      akhir:=nil;
 end;
 
-procedure tambahdepan(var awal,akhir:PDataObat;data:Obat);
+procedure tambahdepanObat(var awal,akhir:PDataObat;data:Obat);
 var
    baru:PDataObat;
 begin
@@ -34,15 +34,16 @@ begin
      baru^.prev:=nil;
      if awal=nil then
      begin
-          awal:=baru;
           akhir:=baru;
      end
      else
      begin
-          baru^.next:=awal;
+          baru^.next := awal;
           awal^.prev:=baru;
-          awal:=baru;
      end;
+     awal := baru;
+     akhir^.next := awal;
+     awal^.prev := akhir;
 end;
 
 
@@ -61,7 +62,7 @@ var
 begin
      writeln('ID Obat     Nama Obat     Harga    Stok');
      bantu:=awal;
-     while bantu<>nil do
+     while bantu<>akhir do
      begin
           write(bantu^.info.id_obat,'       ',bantu^.info.nama_obat,'       ',
           bantu^.info.harga,'       ',bantu^.info.stok);
@@ -79,7 +80,7 @@ begin
      assign(f,'testobat.dat');
      rewrite(f);
      bantu:=awal;
-	 while bantu<>nil do
+	 while bantu<>akhir do
      begin
           write(f,bantu^.info);
           bantu:=bantu^.next;
@@ -104,7 +105,7 @@ begin
           begin
                read(c,obatBaru);
                TambahRecordObat(SRecObat,obatBaru.id_obat,obatBaru.nama_obat,obatBaru.harga,obatBaru.stok);
-               tambahdepan(awal,akhir,SRecObat);
+               tambahdepanObat(awal,akhir,SRecObat);
           end;
 
           close(c);
@@ -134,15 +135,15 @@ penciptaan(awal,akhir);
      write('data setelah ditambah');
      writeln;
      TambahRecordObat(SRecObat,'005','Alkohol',30000,70);
-     tambahdepan(awal,akhir,SRecObat);
+     tambahdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'006','Antimo',2500,89);
-     tambahdepan(awal,akhir,SRecObat);
+     tambahdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'007','Panadol',7500,7);
-     tambahdepan(awal,akhir,SRecObat);
+     tambahdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'008','Amoxsilin',3621,33);
-     tambahdepan(awal,akhir,SRecObat);
+     tambahdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'009','Bodrex',3621,33);
-     tambahdepan(awal,akhir,SRecObat);
+     tambahdepanObat(awal,akhir,SRecObat);
 
 
      tampil(awal,akhir);
