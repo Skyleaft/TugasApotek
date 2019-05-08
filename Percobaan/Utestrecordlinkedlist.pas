@@ -1,4 +1,5 @@
 program Untitled;
+uses crt,sysutils;
 type
     Obat=record
                id_obat:string;
@@ -44,6 +45,16 @@ begin
      end;
 end;
 
+
+Procedure TambahRecordObat(info : obat; id_obat, nama_obat : String; harga, stok : Integer);
+Begin
+ SRecObat.id_obat   := id_obat;
+ SRecObat.nama_obat := nama_obat;
+ SRecObat.harga     := harga;
+ SRecObat.stok      := stok;
+End;
+
+
 procedure tampil(awal,akhir:PDataObat);
 var
    bantu:PDataObat;
@@ -60,29 +71,85 @@ begin
 
 end;
 
-Procedure AssignRecordObat(info : obat; id_obat, nama_obat : String; harga, stok : Integer);
-Begin
- SRecObat.id_obat   := id_obat;
- SRecObat.nama_obat := nama_obat;
- SRecObat.harga     := harga;
- SRecObat.stok      := stok;
-End;
+procedure simpankefile;
+var
+   f:file of Obat;
+   bantu:PDataObat;
+begin
+     assign(f,'testobat.dat');
+     rewrite(f);
+     bantu:=awal;
+	 while bantu<>nil do
+     begin
+          write(f,bantu^.info);
+          bantu:=bantu^.next;
+     end;
+     writeln(' Data Telah Disimpan Ke File');
+     readln;
+end;
+
+procedure bacadarifile;
+var
+   c:file of Obat;
+   bantu:PDataObat;
+   obatBaru:Obat;
+begin
+     if fileexists('testobat.dat') then
+     begin
+          assign(c,'testobat.dat');
+          reset(c);
+          //write('test');
+          penciptaan(awal,akhir);
+          while not eof(c) do
+          begin
+               read(c,obatBaru);
+               TambahRecordObat(SRecObat,obatBaru.id_obat,obatBaru.nama_obat,obatBaru.harga,obatBaru.stok);
+               tambahdepan(awal,akhir,SRecObat);
+          end;
+
+          close(c);
+          writeln('Baca data selesai. ');
+          readln;
+     end
+     else
+     begin
+          writeln('File Belum Ada. Tidak ada data yang terbaca');readln;
+     end;
+
+
+end;
+
+
 
 
 
 begin
-     penciptaan(awal,akhir);
-     AssignRecordObat(SRecObat,'001','parasetamol',2000,30);
+penciptaan(awal,akhir);
+     bacadarifile;
+
+     writeln('tampilin dari file');
+     tampil(awal,akhir);
+     writeln;
+     writeln;
+     write('data setelah ditambah');
+     writeln;
+     TambahRecordObat(SRecObat,'005','Alkohol',30000,70);
      tambahdepan(awal,akhir,SRecObat);
-     AssignRecordObat(SRecObat,'002','asdawd',6000,10);
+     TambahRecordObat(SRecObat,'006','Antimo',2500,89);
      tambahdepan(awal,akhir,SRecObat);
-     AssignRecordObat(SRecObat,'003','asawgawghwahdawd',7500,4);
+     TambahRecordObat(SRecObat,'007','Panadol',7500,7);
      tambahdepan(awal,akhir,SRecObat);
-     AssignRecordObat(SRecObat,'004','wetwetwqw',26000,16);
+     TambahRecordObat(SRecObat,'008','Amoxsilin',3621,33);
+     tambahdepan(awal,akhir,SRecObat);
+     TambahRecordObat(SRecObat,'009','Bodrex',3621,33);
      tambahdepan(awal,akhir,SRecObat);
 
 
      tampil(awal,akhir);
+
+     //simpankefile;
+
+
 
      readln;
 end.

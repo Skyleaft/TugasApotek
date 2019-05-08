@@ -1,12 +1,12 @@
 [Project]
-FileName=E:\Repository\Pascal\testrecordlinkedlist.dp
+FileName=E:\Repository\Pascal\TugasApotek\Percobaan\testrecordlinkedlist.dp
 Name=testrecordlinkedlist
-MainUnit=E:\Repository\Pascal\Utestrecordlinkedlist.pas
+MainUnit=E:\Repository\Pascal\TugasApotek\Percobaan\Utestrecordlinkedlist.pas
 UnitCount=1
 ResFiles=E:\Repository\Pascal\rsrc.rc
 NoConsole=0
 IsDll=0
 Icon=C:\Dev-Pas\Icon\Mainicon.ico
 [Unit1]
-FileName=E:\Repository\Pascal\Utestrecordlinkedlist.pas
-FileTime=1319615783
+FileName=E:\Repository\Pascal\TugasApotek\Percobaan\Utestrecordlinkedlist.pas
+FileTime=1319659675
