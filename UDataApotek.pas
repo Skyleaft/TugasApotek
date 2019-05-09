@@ -44,12 +44,11 @@ type
     Obat=record
                 id_obat:string;
                 nama_obat:string;
-                harga:integer;
                 jenis:string;
+                harga:integer;
                 stok:integer;
     end;
-//deklarasi double linkedlist
-    //DObat=Obat;
+
     PDataObat=^TDataObat;
     TDataObat=record
                     info:Obat;
@@ -61,8 +60,10 @@ type
 
 
 
-
+//global Variable
 var
+   SRecObat:Obat;
+   awal,akhir:PDataObat;
 
    data_anggota:Array[1..maks] of TAnggota;
    data_pinjaman:Array[1..maksPinjaman] of TPinjaman;
@@ -114,8 +115,6 @@ begin
 end;
 
 procedure bersihin();
-var
-   i:integer;
 begin
      textcolor(0);textbackground(0);
      window(1,1,120,30);
@@ -123,6 +122,8 @@ begin
 end;
 
 //----------------------------------------------------------------------------------------------------------------------
+
+
 
 
 procedure penciptaan(var awal,akhir:PDataObat);
@@ -136,8 +137,16 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 //tambah data obat
 //----------------------------------------------------------------------------------------------------------------------
+Procedure TambahRecordObat(info : obat; id_obat, nama_obat, jenis : String; harga, stok : Integer);
+Begin
+     SRecObat.id_obat   := id_obat;
+     SRecObat.nama_obat := nama_obat;
+     SRecObat.jenis     := jenis;
+     SRecObat.harga     := harga;
+     SRecObat.stok      := stok;
+End;
 
-procedure tambahdepanobat(var awal,akhir:PDataObat;data:Obat);
+procedure tambahdepanObat(var awal,akhir:PDataObat;data:Obat);
 var
    baru:PDataObat;
 begin
@@ -147,46 +156,46 @@ begin
      baru^.prev:=nil;
      if awal=nil then
      begin
-          awal:=baru;
           akhir:=baru;
      end
      else
      begin
           baru^.next:=awal;
           awal^.prev:=baru;
-          awal:=baru;
+
      end;
+     awal := baru;
+      akhir^.next := awal;
+      awal^.prev := akhir;
 end;
-//----------------------------------------------------------------------------------------------------------------------
 
-
-procedure tampil(awal,akhir:PDataObat);
+procedure tambahbelakangObat(var awal,akhir:PDataObat;data:Obat);
 var
-   bantu:PDataObat;
+   baru:PDataObat;
 begin
-     write('Data : [');
-     bantu:=awal;
-     while bantu<>nil do
-     begin
-          write(bantu^.info);
-          bantu:=bantu^.next;
-     end;
-     writeln(']');
+     new(baru);
+     baru^.info := data;   
+     baru^.next:=nil;
+     baru^.prev:=nil;
+     if (awal = nil) then
+        tambahdepanObat(awal,akhir,data)
+     else
+         begin
+           akhir^.next := baru;
+           baru^.prev := akhir;
+           akhir := baru;
+           akhir^.next := awal;
+           awal^.prev := akhir;
+         end;
 end;
 
 
 
 
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//TAMBAH OBAT
-//----------------------------------------------------------------------------------------------------------------------
 procedure tambah_Obat;
 var
-   //Sid_obat:Obat.id_obat;
-   //Snama_obat:Obat.nama_obat;
+   Rid_obat,Rnama_obat,Rjenis:string;
+   Rharga,Rstok:integer;
 begin
      clrscr;
      bersihin;
@@ -194,157 +203,74 @@ begin
           pemisah(4,50,4);
 
           gotoxy(6,5);writeln('Masukan Data Obat ');
-          //gotoxy(6,6);write('id Obat    : ');readln(Sid_obat);
-          //gotoxy(6,7);write('Nama Obat  : ');readln(Snama_obat);
-          //gotoxy(6,8);write('Jenis      : ');readln(Sjenis);
-          //gotoxy(6,9);write('Harga      : ');readln(Sharga);
-          //gotoxy(6,10);write('Stok      : ');readln(Sstok);
+          gotoxy(6,6);write('id Obat    : ');readln(Rid_obat);
+          gotoxy(6,7);write('Nama Obat  : ');readln(Rnama_obat);
+          gotoxy(6,8);write('Jenis      : ');readln(Rjenis);
+          gotoxy(6,9);write('Harga      : ');readln(Rharga);
+          gotoxy(6,10);write('Stok      : ');readln(Rstok);
+
+          TambahRecordObat(SRecObat,Rid_obat,Rnama_obat,Rjenis,Rharga,Rstok);
+          tambahdepanObat(awal,akhir,SRecObat);
+
           gotoxy(6,12);write('Data berhasil Disimpan');
 
 
           gotoxy(6,16);write('Tekan enter untuk kembali ke menu');
           read;
 
+end;
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//TAMPIL DATA Obat
+//----------------------------------------------------------------------------------------------------------------------
+procedure tampil_dataObat(awal,akhir:PDataObat);
+var
+   i,j : integer;
+   bantu:PDataObat;
+begin
+     //bersihin;
+     clrscr;
+     //kotak(2,120,2,29,BLUE,WHITE,'Data Obat');
+     //pemisah(2,120,4);
+     //                                    12345678901234567         123456789012345      1234567890123456       12345678901234
+     //gotoxy(10,6);writeln('ID Obat ',#179,'     Nama Obat     ',#179,'    Jenis    ',#179,'     Harga     ',#179,'    Stok    ');
+     
+     if awal=nil then
+     begin
+          write('Pesan : Data Kosong. Tekan Enter Untuk Kembali !');
      end
      else
      begin
-          writeln('Data Penuh. Tekan Enter Untuk Melanjutkan');readln;
-     end;
-end;
-//----------------------------------------------------------------------------------------------------------------------
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//SIMPAN SALDO
-//----------------------------------------------------------------------------------------------------------------------
-procedure simpanan;
-var
-   id:string;
-   i,index:integer;
-   ketemu:boolean;
-   insaldo:real;
-begin
-     bersihin;
-     clrscr;
-     kotak(4,50,2,20,BLUE,WHITE,'Simpanan/Tabungan');
-     pemisah(4,50,4);
-
-     gotoxy(6,5);writeln('Masukan Data Anggota');
-     gotoxy(6,6);write('ID Anggota : ');readln(id);
-     for i:=1 to bd do
-         if id = data_anggota[i].id_anggota then
-         begin
-              ketemu:=true;
-              index:=i;
-         end;
-         if ketemu = true then
-         begin
-              gotoxy(6,8);writeln('Nama Anggota : ',data_anggota[index].nama);
-              gotoxy(6,9);writeln('Alamat       : ',data_anggota[index].alamat);
-              gotoxy(6,10);writeln('Saldo        : Rp.',data_anggota[index].saldo:0:0);
-
-              writeln;
-              gotoxy(6,12);write('Tambahkan Saldo : Rp.');read(insaldo);
-              data_anggota[index].saldo:=data_anggota[index].saldo + insaldo;
-              gotoxy(6,13);writeln('Saldo Akhir     : Rp.',data_anggota[index].saldo:0:0);
-
-              gotoxy(6,16);write('Tekan enter untuk kembali ke menu');
-              read;
-          end
-          else
+          bantu:=awal;
+          j :=1;
+          while bantu<>akhir do
           begin
-              gotoxy(6,7);writeln('Data Tidak Ditemukan');
+               bantu:=bantu^.next;
+               j:=j+1;
           end;
-          readln;
-end;
-//----------------------------------------------------------------------------------------------------------------------
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//PENARIKAN SALDO
-//----------------------------------------------------------------------------------------------------------------------
-procedure tarik_saldo;
-var
-   id:string;
-   i,index:integer;
-   ketemu:boolean;
-   insaldo:real;
-   tempsaldo:real;
-begin
-     bersihin;
-     clrscr;
-     kotak(4,50,2,20,BLUE,WHITE,'Penarikan Saldo');
-     pemisah(4,50,4);
-
-     gotoxy(6,5);writeln('Masukan Data Anggota');
-     gotoxy(6,6);write('ID Anggota : ');readln(id);
-     for i:=1 to bd do
-         if id = data_anggota[i].id_anggota then
-         begin
-              ketemu:=true;
-              index:=i;
-         end;
-         if ketemu = true then
-         begin
-              gotoxy(6,8);writeln('Nama Anggota : ',data_anggota[index].nama);
-              gotoxy(6,9);writeln('Alamat       : ',data_anggota[index].alamat);
-              gotoxy(6,10);writeln('Saldo        : Rp.',data_anggota[index].saldo:0:0);
-
-              tempsaldo:= data_anggota[index].saldo;
-              writeln;
-              writeln;
-              gotoxy(6,12);write('Ambil Saldo : Rp.');read(insaldo);
-              if insaldo > tempsaldo then
-              begin
-                 gotoxy(6,13);writeln('Saldo Anda Kurang');
-              end
-              else
-                  tempsaldo := tempsaldo - insaldo;
-
-              data_anggota[index].saldo:=tempsaldo;
-              gotoxy(6,14);writeln('Saldo Akhir    : Rp.',data_anggota[index].saldo:0:0);
-
-              gotoxy(6,16);write('Tekan enter untuk kembali ke menu');
-              readln;
-          end
-          else
+          bantu:=awal;
+          for i:=1 to j do
           begin
-              gotoxy(6,7);writeln('Data Tidak Ditemukan');
+               bantu:=bantu^.next;
+               write(bantu^.info.id_obat,'       ',bantu^.info.nama_obat,'       ',bantu^.info.jenis,'       ',bantu^.info.harga,'       ',bantu^.info.stok);
+               writeln;
           end;
 
-end;
-
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//TAMPIL DATA ANGGOTA
-//----------------------------------------------------------------------------------------------------------------------
-procedure tampil_dataAnggota;
-var
-   i:integer;
-begin
-     bersihin;
-     clrscr;
-     kotak(2,120,2,29,BLUE,WHITE,'Data Anggota');
-     pemisah(2,120,4);
-
-     //writeln('-------------------------------------------------------');
-     //                                       12345678901234567      12345678901234567890        12345678901234567        12345678901234567       1234567890123456789
-     gotoxy(10,6);writeln('ID Anggota ',#179,'  Nama Anggota   ',#179,'       Alamat        ',#179,'     No.Telp     ',#179,'    Pekerjaan    ',#179,'      Saldo      ');
-     for i:=1 to bd do
-     begin
-         gotoxy(7,6+i);writeln(data_anggota[i].id_anggota:10,'    ',#179,' ',data_anggota[i].nama:15,' ',#179,' ',data_anggota[i].alamat:19,' ',#179,' ',data_anggota[i].no_telp:14,'  ',#179,'  ',data_anggota[i].pekerjaan:13,'  ',#179,' Rp.',data_anggota[i].saldo:0:0);
+     write('Tekan enter untuk kembali ke menu');
      end;
-     gotoxy(4,27);write('Tekan enter untuk kembali ke menu');
      read;
 end;
+
 //----------------------------------------------------------------------------------------------------------------------
 
 
@@ -844,20 +770,30 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 procedure simpansemuafile;
 var
-   i,x:integer;
-   f:file of TAnggota;
-   fp:file of TPinjaman;
+   f:file of Obat;
+   bantu:PDataObat;
+   i,j:integer;
 begin
-     assign(f,'FileAnggota.dat');
+     assign(f,'DataObat.dat');
      rewrite(f);
-     for i:=1 to bd do
-         write(f,data_anggota[i]);
-     assign(fp,'FilePinjaman.dat');
-     rewrite(fp);
-     for x:=1 to bdpinjam do
-         write(fp,data_pinjaman[x]);
-     write(bd,'Data Telah Disimpan Ke File');
-     read;
+
+     bantu:=awal;
+     j :=1;
+     while bantu<>akhir do
+     begin
+          bantu:=bantu^.next;
+          j:=j+1;
+     end;
+     bantu:=awal;
+     for i:=1 to j do
+     begin
+          bantu:=bantu^.next;
+          write(f,bantu^.info);
+
+     end;
+
+     writeln(j,' Data Telah Disimpan Ke File');
+     readln;
 end;
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -866,49 +802,42 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 procedure bacasemuafile;
 var
-   f:file of TAnggota;
-   fp:file of TPinjaman;
+   c:file of Obat;
+   bantu:PDataObat;
+   obatBaru:Obat;
+   j:integer;
 begin
-     if fileexists('FileAnggota.dat') then
+     if fileexists('DataObat.dat') then
      begin
-          assign(f,'FileAnggota.dat');
-          reset(f);
-          while not eof(f) do
+          assign(c,'DataObat.dat');
+          reset(c);
+          //write('test');
+          penciptaan(awal,akhir);
+          while not eof(c) do
           begin
-               bd:=bd+1;
-               read(f,data_anggota[bd]);
+               read(c,obatBaru);
+               TambahRecordObat(SRecObat,obatBaru.id_obat,obatBaru.nama_obat,obatBaru.jenis,obatBaru.harga,obatBaru.stok);
+               tambahdepanObat(awal,akhir,SRecObat);
           end;
-          close(f);
-          write('Baca data Anggota selesai. Jumlah Anggota : ',bd,' record.  Tekan Enter.....');
-          readln;
+
+          close(c);
+           j :=1;
+           bantu:=awal;
+           while bantu<>akhir do
+           begin
+                bantu:=bantu^.next;
+                j:=j+1;
+           end;
+
+          writeln('Baca data selesai. Terbaca ',j,' data');
      end
      else
      begin
-          write('File Belum Ada. Tidak ada data yang terbaca');readln;
+          writeln('File Belum Ada. Tidak ada data yang terbaca');readln;
      end;
-
-     if fileexists('FilePinjaman.dat') then
-     begin
-          assign(fp,'FilePinjaman.dat');
-          reset(fp);
-          while not eof(fp) do
-          begin
-               bdpinjam:=bdpinjam+1;
-               read(fp,data_pinjaman[bdpinjam]);
-          end;
-          close(fp);
-          write('Baca data Pinjaman selesai. Jumlah Pinjaman : ',bdpinjam,' record.  Tekan Enter.....');
-          readln;
-     end
-     else
-     begin
-          write('File Belum Ada. Tidak ada data yang terbaca');readln;
-     end;
-
 
 end;
 //----------------------------------------------------------------------------------------------------------------------
-
 
 
 
@@ -919,7 +848,7 @@ end;
 procedure isi_menu;
 begin
      Tmenu[1]:=' 1. Tambah Obat       ';
-     Tmenu[2]:=' 2.      ';
+     Tmenu[2]:=' 2. Tampil Data Obat    ';
      Tmenu[3]:=' 3.     ';
      Tmenu[4]:=' 4.      ';
      Tmenu[5]:=' 5.          ';
@@ -928,7 +857,7 @@ begin
      Tmenu[8]:=' 8.                  ';
      Tmenu[9]:=' 9.             ';
      Tmenu[10]:=' 10.  ';
-     Tmenu[11]:=' 11.       ';
+     Tmenu[11]:=' 11. Simpan Ke File      ';
      Tmenu[12]:=' 12. Keluar                   ';
 end;
 
@@ -957,15 +886,15 @@ procedure buka_menu(t:integer);
 begin
      case t of
           1:tambah_Obat;
-          2:tampil_dataAnggota;
-          3:pengurutan_Anggota;
-          4:pencarian_Anggota;
-          5:pilih_AnggotaUbah;
-          6:pilih_AnggotaHapus;
-          7:simpanan;
-          8:pinjaman;
-          9:tarik_saldo;
-          10:tampil_pinjaman;
+          2:tampil_dataObat(awal,akhir);
+          3:;
+          4:;
+          5:;
+          6:;
+          7:;
+          8:;
+          9:;
+          10:;
           11:simpansemuafile;
      end;
 end;
@@ -1000,15 +929,35 @@ begin
 end;
 
 
+procedure testisi;
+begin
+
+     TambahRecordObat(SRecObat,'005','Alkohol','botol',30000,70);
+     tambahdepanObat(awal,akhir,SRecObat);
+     TambahRecordObat(SRecObat,'006','Antimo','tablet',2500,89);
+     tambahdepanObat(awal,akhir,SRecObat);
+     TambahRecordObat(SRecObat,'007','Panadol','botol',7500,7);
+     tambahdepanObat(awal,akhir,SRecObat);
+
+end;
+
+
+
 //----------------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------------
 //mulai disini
 //----------------------------------------------------------------------------------------------------------------------
 begin
+penciptaan(awal,akhir);
+
      bd:=0;
      bdpinjam:=0;
      bacasemuafile;
+
+     //testisi;
+
+     readln;
 
      repeat
      bersihin;
