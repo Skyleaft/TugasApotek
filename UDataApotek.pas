@@ -64,6 +64,7 @@ type
 var
    SRecObat:Obat;
    awal,akhir:PDataObat;
+   banyakObat:integer;
 
    data_anggota:Array[1..maks] of TAnggota;
    data_pinjaman:Array[1..maksPinjaman] of TPinjaman;
@@ -133,6 +134,24 @@ begin
 end;
 
 
+//----------------------------------------------------------------------------------------------------------------------
+//Hitung Banyak DATA Obat
+//----------------------------------------------------------------------------------------------------------------------
+ procedure hitungbdObat;
+ var
+    bantu:PDataObat;
+ begin
+      bantu:=awal;
+          banyakObat :=1;
+          while bantu<>akhir do
+          begin
+               bantu:=bantu^.next;
+               banyakObat:=banyakObat+1;
+          end;
+ end;
+//----------------------------------------------------------------------------------------------------------------------
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //tambah data obat
@@ -196,11 +215,16 @@ procedure tambah_Obat;
 var
    Rid_obat,Rnama_obat,Rjenis:string;
    Rharga,Rstok:integer;
+
 begin
      clrscr;
      bersihin;
-          kotak(4,50,2,20,BLUE,WHITE,'Tambah Data Anggota');
+          kotak(4,50,2,20,BLUE,WHITE,'Tambah Data Obat');
           pemisah(4,50,4);
+
+
+
+
 
           gotoxy(6,5);writeln('Masukan Data Obat ');
           gotoxy(6,6);write('id Obat    : ');readln(Rid_obat);
@@ -226,10 +250,6 @@ end;
 
 
 
-
-
-
-
 //----------------------------------------------------------------------------------------------------------------------
 //TAMPIL DATA Obat
 //----------------------------------------------------------------------------------------------------------------------
@@ -247,20 +267,14 @@ begin
      
      if awal=nil then
      begin
-          write('Pesan : Data Kosong. Tekan Enter Untuk Kembali !');
+          write('Data Kosong. Tekan Enter Untuk Kembali !');
      end
      else
      begin
-          bantu:=awal;
-          j :=1;
-          while bantu<>akhir do
-          begin
-               bantu:=bantu^.next;
-               j:=j+1;
-          end;
+          hitungbdObat;
           bantu:=awal;
           y:=1;
-          for i:=1 to j do
+          for i:=1 to banyakObat do
           begin
                bantu:=bantu^.next;
                gotoxy(4,4+y);
@@ -269,7 +283,7 @@ begin
           end;
 
           pemisah(1,120,27);
-          gotoxy(4,28);write('Jumlah Obat : ',j);
+          gotoxy(4,28);write('Jumlah Obat : ',banyakObat);
           gotoxy(4,29);write('Tekan enter untuk kembali ke menu                                                        !note : Jangan di maximize');
      end;
      read;
@@ -280,90 +294,118 @@ end;
 
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//TAMPIL DATA PINJAMAN
-//----------------------------------------------------------------------------------------------------------------------
-procedure tampil_pinjaman;
-var
-   i:integer;
-begin
-     bersihin;
-     clrscr;
-
-     kotak(2,120,2,29,BLUE,WHITE,'Data Pinjaman');
-     pemisah(2,120,4);
-     //writeln('-------------------------------------------------------');
-     gotoxy(10,6);writeln('Kode ',#179,' ID Anggota ',#179,'  Tanggal  ',#179,' Nominal Pinjam  ',#179,'    Lama   ',#179,' Bunga ',#179,'      Total      ',#179,'    Angsuran    ');
-     for i:=1 to bdpinjam do
-     begin
-         gotoxy(8,6+i);writeln(' ',data_pinjaman[i].kd_pinjaman,' ',#179,'     ',data_pinjaman[i].id_anggota,'    ',#179,'  ',data_pinjaman[i].tgl_pinjam,' ',#179,'  Rp.',data_pinjaman[i].jml_pinjam:0:0,'     ',#179,'  ',data_pinjaman[i].lama,' Bulan ',#179,'   ',data_pinjaman[i].bunga:0:0,'%  ',#179,'   Rp.',data_pinjaman[i].total:0:0,'    ',#179,'   Rp.',data_pinjaman[i].angsuran:0:0);
-     end;
-     gotoxy(4,27);write('Tekan enter untuk kembali ke menu');
-     read;
-end;
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
 
 
 
 
 //----------------------------------------------------------------------------------------------------------------------
-//UBAH DATA ANGGOTA
+//UBAH DATA Obat
 //----------------------------------------------------------------------------------------------------------------------
 var
    terpilih:integer;
    tombol:char;
 
-procedure tulis_menuUbah;
+procedure tulis_menuUbahObat(awal,akhir:PDataObat);
 var
-   i:integer;
+   i,y:integer;
+   bantu:PDataObat;
 begin
      bersihin;
-     kotak(4,40,2,20,BLUE,WHITE,'Ubah Data Anggota');
+     kotak(4,40,2,20,BLUE,WHITE,'Ubah Data Obat');
      pemisah(4,40,4);
-     gotoxy(5,5);writeln('Pilih Data yang mau diubah');
-     gotoxy(10,7);writeln('ID Anggota ',#179,' Nama Anggota ');
-     for i:=1 to bd do
-         begin
+     if awal=nil then
+     begin
+          gotoxy(4,6);write('Data Kosong. Tekan Enter Untuk Kembali !');
+     end
+     else
+     begin
+          gotoxy(5,5);writeln('Pilih Data yang mau diubah');
+          gotoxy(10,7);writeln(' ID Obat ',#179,'  Nama Obat  ');
+          hitungbdObat;
+          bantu:=awal;
+          y:=1;
+
+
+          for i:=1 to banyakObat do
+          begin
               if terpilih = i then
               begin
                    textbackground(4);
-                   gotoxy(10,7+i);writeln('  ',data_anggota[i].id_anggota,'      ',#179,'  ',data_anggota[i].nama);
+
+                   bantu:=bantu^.next;
+                   gotoxy(10,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
+                   y:=y+1;
               end
               else
               begin
                    textbackground(blue);
-                   gotoxy(10,7+i);writeln('  ',data_anggota[i].id_anggota,'      ',#179,'  ',data_anggota[i].nama);
+                   bantu:=bantu^.next;
+                   gotoxy(10,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
+                   y:=y+1
+              end;
               end;
 
      end;
+
+
 end;
 
 procedure ubah_Anggota(index:integer);
 var
-   nama,alamat,no_telp,pekerjaan:string;
+   nama,id_obat,jenis:string;
+   harga,stok:integer;
+   bantu:PDataObat;
+   j,i:integer;
+   Rid_obat,Rnama_obat,Rjenis:string;
+   Rharga,Rstok:integer;
+   ketemu : boolean;
 begin
      bersihin;
      kotak(4,65,2,20,BLUE,WHITE,'Ubah Data Anggota');
      pemisah(4,65,4);
 
-     gotoxy(5,5);writeln('Data yang Mau Di Ubah ID : ',data_anggota[index].id_anggota);
+     bantu:=awal;
+     for i:=1 to index do
+          begin
+               bantu:=bantu^.next;
+               id_obat:=bantu^.info.id_obat;
+               nama:=bantu^.info.nama_obat;
+               jenis:=bantu^.info.jenis;
+               harga:=bantu^.info.harga;
+               stok:=bantu^.info.stok;
+          end;
+
+
+     gotoxy(5,5);writeln('Data yang Mau Di Ubah ID Obat : ',id_obat);
      gotoxy(5,6);writeln('Kosongkan yang tidak diubah');
-     gotoxy(5,8);write('Nama       : ',data_anggota[index].nama,'   Ubah  : ');readln(nama);
-     gotoxy(5,9);write('Alamat     : ',data_anggota[index].alamat,'   Ubah  : ');readln(alamat);
-     gotoxy(5,10);write('No Telepon : ',data_anggota[index].no_telp,'   Ubah  : ');readln(no_telp);
-     gotoxy(5,11);write('pekerjaan  : ',data_anggota[index].pekerjaan,'   Ubah  : ');readln(pekerjaan);
-     if nama<>'' then
-        data_anggota[index].nama:=nama;
-     if alamat<>'' then
-        data_anggota[index].alamat:=alamat;
-     if no_telp<>'' then
-        data_anggota[index].no_telp:=no_telp;
-     if pekerjaan<>'' then
-        data_anggota[index].pekerjaan:=pekerjaan;
+     gotoxy(5,8);write('Nama       : ',nama,'   Ubah  : ');readln(Rnama_obat);
+     gotoxy(5,9);write('Jenis     : ',jenis,'   Ubah  : ');readln(Rjenis);
+     gotoxy(5,10);write('Harga : ',harga,'   Ubah  : ');readln(Rharga);
+     gotoxy(5,11);write('Stok  : ',stok,'   Ubah  : ');readln(Rstok);
+
+     ketemu := false;
+     bantu := awal;
+     while (ketemu = false) and (bantu <> akhir) do
+                 if (bantu^.info.id_obat = id_obat) then
+                    ketemu := true
+                 else
+                     bantu := bantu^.next;
+                 if (ketemu = true) then
+                 begin
+                      if Rnama_obat<>'' then
+                         bantu^.info.nama_obat:=Rnama_obat;
+                      if Rjenis<>'' then
+                         bantu^.info.jenis:=Rjenis;
+                      if IntToStr(Rharga)<>'' then
+                         bantu^.info.harga:=Rharga;
+                      if IntToStr(Rstok)<>'' then
+                         bantu^.info.stok:=Rstok;
+                 end;
+
+
+
+
+
 
      gotoxy(5,15);write('Data berhasil Di Ubah');
      gotoxy(5,16);write('Tekan enter untuk kembali ke menu');
@@ -371,19 +413,20 @@ begin
 
 end;
 
-procedure pilih_AnggotaUbah;
+procedure pilih_ObatUbah;
 var
    i:integer;
 begin
      terpilih:=1;
+     hitungbdObat;
      repeat
      clrscr;
-     tulis_menuUbah;
+     tulis_menuUbahObat(awal,akhir);
 
      tombol:=readkey;
      if tombol=bawah then
      begin
-          if terpilih <> bd then
+          if terpilih <> banyakObat then
              terpilih:=terpilih+1;
      end
 
@@ -411,284 +454,7 @@ end;
 
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//HAPUS DATA ANGGOTA
-//----------------------------------------------------------------------------------------------------------------------
-var
-   terpilih2:integer;
 
-procedure tulis_menuHapus;
-var
-   i:integer;
-begin
-     bersihin;
-     kotak(4,40,2,20,BLUE,WHITE,'Hapus Data Anggota');
-     pemisah(4,40,4);
-     gotoxy(5,5);writeln('Pilih Data yang mau diubah');
-     gotoxy(10,7);writeln('ID Anggota ',#179,' Nama Anggota ');
-     for i:=1 to bd do
-         begin
-              if terpilih2 = i then
-              begin
-                   textbackground(4);
-                   gotoxy(10,7+i);writeln('  ',data_anggota[i].id_anggota,'      ',#179,'  ',data_anggota[i].nama);
-              end
-              else
-              begin
-                   textbackground(blue);
-                   gotoxy(10,7+i);writeln('  ',data_anggota[i].id_anggota,'      ',#179,'  ',data_anggota[i].nama);
-              end;
-
-     end;
-end;
-
-procedure hapus_Anggota(index:integer);
-var
-   yt:char;
-   x:integer;
-   temp:TAnggota;
-begin
-     bersihin;
-     kotak(4,55,2,10,BLUE,WHITE,'Hapus Data Anggota');
-     pemisah(4,55,4);
-
-     gotoxy(5,5);write('Hapus Data ID:',data_anggota[index].id_anggota,'  Atas Nama : ',data_anggota[index].nama,' ?(y/t)');
-     read(yt);
-     if upcase(yt) = 'Y' then
-     begin
-          temp:=data_anggota[index+1];
-          for x:=index to bd do
-          begin
-               data_anggota[x]:=temp;
-               temp:=data_anggota[index+x+1];
-          end;
-        bd:=bd-1;
-        gotoxy(5,7);write('Data Berhasil Dihapus');
-     end
-     else if upcase(yt) = 'T' then
-     begin
-          gotoxy(5,7);write('Hapus Dibatalkan');
-     end;
-     gotoxy(5,8);write('Tekan enter untuk kembali ke menu');
-     readln;
-end;
-
-procedure pilih_AnggotaHapus;
-var
-   i:integer;
-begin
-     terpilih2:=1;
-     repeat
-     clrscr;
-     tulis_menuHapus;
-
-     tombol:=readkey;
-     if tombol=bawah then
-     begin
-          if terpilih2 <> bd then
-             terpilih2:=terpilih2+1;
-     end
-
-     else if tombol=atas then
-     begin
-          terpilih2:=terpilih2-1;
-          if terpilih2 = 0 then
-             terpilih2:=terpilih2+1;
-     end
-     else if tombol=enter then
-     begin
-          clrscr;
-          hapus_Anggota(terpilih2);
-     end;
-
-
-     //readln(i);
-     //terpilih:=i;
-     until tombol=enter;
-end;
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//PENGURUTAN DATA ANGGOTA
-//----------------------------------------------------------------------------------------------------------------------
-procedure pengurutan_idAnggota();
-var
-   i,j:integer;
-   temp:TAnggota;
-begin
-   for i:=1 to bd-1 do
-   begin
-        for j:=bd downto i+1 do
-        begin
-             if data_anggota[j].id_anggota < data_anggota[j-1].id_anggota then
-             begin
-                  temp:=data_anggota[j];
-                  data_anggota[j]:=data_anggota[j-1];
-                  data_anggota[j-1]:=temp;
-             end;
-        end;
-   end;
-   gotoxy(5,12);writeln('Pengurutan Selesai. Tekan Enter untuk melanjutkan');read;
-end;
-
-procedure pengurutan_namaAnggota();
-var
-   i,j:integer;
-   temp:TAnggota;
-begin
-   for i:=1 to bd-1 do
-   begin
-        for j:=bd downto i+1 do
-        begin
-             if data_anggota[j].nama < data_anggota[j-1].nama then
-             begin
-                  temp:=data_anggota[j];
-                  data_anggota[j]:=data_anggota[j-1];
-                  data_anggota[j-1]:=temp;
-             end;
-        end;
-   end;
-   gotoxy(5,12);writeln('Pengurutan Selesai. Tekan Enter untuk melanjutkan');read;
-end;
-
-procedure pengurutan_saldoAnggota();
-var
-   i,j:integer;
-   temp:TAnggota;
-begin
-   for i:=1 to bd-1 do
-   begin
-        for j:=bd downto i+1 do
-        begin
-             if data_anggota[j].saldo < data_anggota[j-1].saldo then
-             begin
-                  temp:=data_anggota[j];
-                  data_anggota[j]:=data_anggota[j-1];
-                  data_anggota[j-1]:=temp;
-             end;
-        end;
-   end;
-   gotoxy(5,12);writeln('Pengurutan Selesai. Tekan Enter untuk melanjutkan');read;
-end;
-
-
-
-
-procedure pengurutan_Anggota;
-var
-   pil:integer;
-begin
-     bersihin;
-     clrscr;
-     kotak(4,55,2,17,BLUE,WHITE,'Pengurutan Data Anggota');
-     pemisah(4,55,4);
-     gotoxy(5,5);writeln('1. Pengurutan Berdasarkan ID');
-     gotoxy(5,6);writeln('2. Pengurutan Berdasarkan Nama Anggota');
-     gotoxy(5,7);writeln('3. Pengurutan Berdasarkan Saldo');
-     gotoxy(5,8);writeln('----------------------------------------');
-     gotoxy(5,9);write('Pilihan : ');readln(pil);
-     case pil of
-          1: pengurutan_idAnggota;
-          2: pengurutan_namaAnggota;
-          3: pengurutan_saldoAnggota;
-     end;
-end;
-//----------------------------------------------------------------------------------------------------------------------
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//PENCARIAN DATA ANGGOTA
-//----------------------------------------------------------------------------------------------------------------------
-procedure pencarian_idAnggota;
-var
-   cari:string;
-   i,x:integer;
-   temp:TAnggota;
-begin
-     bersihin;
-     clrscr;
-     kotak(4,55,2,17,BLUE,WHITE,'Pencarian Berdasarkan ID Anggota');
-     pemisah(4,55,4);
-     gotoxy(5,5);write('Masukan ID Anggota : ');readln(cari);
-     i:=1;
-     while (data_anggota[i].id_anggota <> cari) and (i<bd) do
-           i:=i+1;
-     if data_anggota[i].id_anggota = cari then
-     begin
-        gotoxy(5,7);writeln(cari,' ditemukan di indeks ke-',i);
-        gotoxy(5,8);writeln('ID Anggota : ',data_anggota[i].id_anggota);
-        gotoxy(5,9);writeln('Nama       : ',data_anggota[i].nama);
-        gotoxy(5,10);writeln('Alamat     : ',data_anggota[i].alamat);
-        gotoxy(5,11);writeln('Pekerjaan  : ',data_anggota[i].pekerjaan);
-        gotoxy(5,12);writeln('Saldo      : ',data_anggota[i].saldo:0:0);
-     end
-     else
-     begin
-        gotoxy(5,6);writeln(cari,' tidak ditemukan');
-     end;
-     gotoxy(5,13);write('Tekan enter untuk kembali ke menu');
-     read;
-end;
-
-procedure pencarian_namaAnggota;
-var
-   cari:string;
-   i,x:integer;
-   temp:TAnggota;
-begin
-     bersihin;
-     clrscr;
-     kotak(4,55,2,17,BLUE,WHITE,'Pencarian Berdasarkan Nama Anggota');
-     pemisah(4,55,4);
-     gotoxy(5,5);write('Masukan Nama Anggota : ');readln(cari);
-     i:=1;
-     while (data_anggota[i].nama <> cari) and (i<bd) do
-           i:=i+1;
-     if data_anggota[i].nama = cari then
-     begin
-        gotoxy(5,7);writeln(cari,' ditemukan di indeks ke-',i);
-        gotoxy(5,8);writeln('ID Anggota : ',data_anggota[i].id_anggota);
-        gotoxy(5,9);writeln('Nama       : ',data_anggota[i].nama);
-        gotoxy(5,10);writeln('Alamat     : ',data_anggota[i].alamat);
-        gotoxy(5,11);writeln('Pekerjaan  : ',data_anggota[i].pekerjaan);
-        gotoxy(5,12);writeln('Saldo      : ',data_anggota[i].saldo:0:0);
-     end
-     else
-     begin
-        gotoxy(5,6);writeln(cari,' tidak ditemukan');
-     end;
-     gotoxy(5,13);write('Tekan enter untuk kembali ke menu');
-     read;
-end;
-
-
-
-procedure pencarian_Anggota;
-var
-   pil:integer;
-begin
-     bersihin;
-     clrscr;
-     kotak(4,55,2,17,BLUE,WHITE,'Pencarian Data Anggota');
-     pemisah(4,55,4);
-     gotoxy(5,5);writeln('1. pencarian Berdasarkan ID Anggota');
-     gotoxy(5,6);writeln('2. pencarian Berdasarkan Nama Anggota');
-     gotoxy(5,7);writeln('----------------------------------------');
-     gotoxy(5,8);write('Pilihan : ');readln(pil);
-     case pil of
-     1: pencarian_idAnggota;
-     2: pencarian_namaAnggota;
-     end;
-end;
-//----------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -855,7 +621,7 @@ begin
      Tmenu[2]:=' 2. Tampil Data Obat    ';
      Tmenu[3]:=' 3.     ';
      Tmenu[4]:=' 4.      ';
-     Tmenu[5]:=' 5.          ';
+     Tmenu[5]:=' 5. Ubah Data Obat        ';
      Tmenu[6]:=' 6.          ';
      Tmenu[7]:=' 7.                   ';
      Tmenu[8]:=' 8.                  ';
@@ -893,7 +659,7 @@ begin
           2:tampil_dataObat(awal,akhir);
           3:;
           4:;
-          5:;
+          5:pilih_ObatUbah;
           6:;
           7:;
           8:;
