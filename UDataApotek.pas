@@ -146,7 +146,7 @@ Begin
      SRecObat.stok      := stok;
 End;
 
-procedure tambahdepanObat(var awal,akhir:PDataObat;data:Obat);
+procedure sisipdepanObat(var awal,akhir:PDataObat;data:Obat);
 var
    baru:PDataObat;
 begin
@@ -169,7 +169,7 @@ begin
       awal^.prev := akhir;
 end;
 
-procedure tambahbelakangObat(var awal,akhir:PDataObat;data:Obat);
+procedure sisipbelakangObat(var awal,akhir:PDataObat;data:Obat);
 var
    baru:PDataObat;
 begin
@@ -178,7 +178,7 @@ begin
      baru^.next:=nil;
      baru^.prev:=nil;
      if (awal = nil) then
-        tambahdepanObat(awal,akhir,data)
+        sisipdepanObat(awal,akhir,data)
      else
          begin
            akhir^.next := baru;
@@ -210,7 +210,7 @@ begin
           gotoxy(6,10);write('Stok      : ');readln(Rstok);
 
           TambahRecordObat(SRecObat,Rid_obat,Rnama_obat,Rjenis,Rharga,Rstok);
-          tambahdepanObat(awal,akhir,SRecObat);
+          sisipdepanObat(awal,akhir,SRecObat);
 
           gotoxy(6,12);write('Data berhasil Disimpan');
 
@@ -235,15 +235,15 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 procedure tampil_dataObat(awal,akhir:PDataObat);
 var
-   i,j : integer;
+   i,j,y : integer;
    bantu:PDataObat;
 begin
-     //bersihin;
+     bersihin;
      clrscr;
-     //kotak(2,120,2,29,BLUE,WHITE,'Data Obat');
-     //pemisah(2,120,4);
-     //                                    12345678901234567         123456789012345      1234567890123456       12345678901234
-     //gotoxy(10,6);writeln('ID Obat ',#179,'     Nama Obat     ',#179,'    Jenis    ',#179,'     Harga     ',#179,'    Stok    ');
+     kotak(1,120,1,30,BLUE,WHITE,'Data Obat');
+     pemisah(1,120,3);
+     //                                   1234567890123456789012        1234567890123      1234567890123456       12345678901234
+     gotoxy(4,4);writeln(' ID Obat ',#179,'      Nama Obat      ',#179,'    Jenis   ',#179,'    Harga    ',#179,'  Stok  ',#179);
      
      if awal=nil then
      begin
@@ -259,14 +259,18 @@ begin
                j:=j+1;
           end;
           bantu:=awal;
+          y:=1;
           for i:=1 to j do
           begin
                bantu:=bantu^.next;
-               write(bantu^.info.id_obat,'       ',bantu^.info.nama_obat,'       ',bantu^.info.jenis,'       ',bantu^.info.harga,'       ',bantu^.info.stok);
-               writeln;
+               gotoxy(4,4+y);
+               writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat:19,' ',#179,' ',bantu^.info.jenis:10,' ',#179,' Rp.',bantu^.info.harga:8,' ',#179,' ',bantu^.info.stok:5,'  ',#179);
+               y:=y+1;
           end;
 
-     write('Tekan enter untuk kembali ke menu');
+          pemisah(1,120,27);
+          gotoxy(4,28);write('Jumlah Obat : ',j);
+          gotoxy(4,29);write('Tekan enter untuk kembali ke menu                                                        !note : Jangan di maximize');
      end;
      read;
 end;
@@ -817,7 +821,7 @@ begin
           begin
                read(c,obatBaru);
                TambahRecordObat(SRecObat,obatBaru.id_obat,obatBaru.nama_obat,obatBaru.jenis,obatBaru.harga,obatBaru.stok);
-               tambahdepanObat(awal,akhir,SRecObat);
+               sisipdepanObat(awal,akhir,SRecObat);
           end;
 
           close(c);
@@ -933,11 +937,11 @@ procedure testisi;
 begin
 
      TambahRecordObat(SRecObat,'005','Alkohol','botol',30000,70);
-     tambahdepanObat(awal,akhir,SRecObat);
+     sisipdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'006','Antimo','tablet',2500,89);
-     tambahdepanObat(awal,akhir,SRecObat);
-     TambahRecordObat(SRecObat,'007','Panadol','botol',7500,7);
-     tambahdepanObat(awal,akhir,SRecObat);
+     sisipdepanObat(awal,akhir,SRecObat);
+     TambahRecordObat(SRecObat,'007','parah','botol',7500,7);
+     sisipdepanObat(awal,akhir,SRecObat);
 
 end;
 
@@ -955,7 +959,7 @@ penciptaan(awal,akhir);
      bdpinjam:=0;
      bacasemuafile;
 
-     //testisi;
+     testisi;
 
      readln;
 
