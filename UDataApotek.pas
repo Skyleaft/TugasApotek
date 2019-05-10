@@ -239,7 +239,7 @@ begin
      
      if awal=nil then
      begin
-          write('Data Kosong. Tekan Enter Untuk Kembali !');
+          gotoxy(5,6);write('Data Kosong. Tekan Enter Untuk Kembali !');
      end
      else
      begin
@@ -248,10 +248,11 @@ begin
           y:=1;
           for i:=1 to banyakObat do
           begin
-               bantu:=bantu^.next;
                gotoxy(4,4+y);
                writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat:19,' ',#179,' ',bantu^.info.jenis:10,' ',#179,' Rp.',bantu^.info.harga:8,' ',#179,' ',bantu^.info.stok:5,'  ',#179);
                y:=y+1;
+               bantu:=bantu^.next;
+
           end;
 
           pemisah(1,120,27);
@@ -298,22 +299,21 @@ begin
           y:=1;
           for i:=1 to banyakObat do
           begin
-              if terpilih = i then
-              begin
-                   textbackground(4);
-
-                   bantu:=bantu^.next;
-                   gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
-                   y:=y+1;
-              end
-              else
-              begin
-                   textbackground(blue);
-                   bantu:=bantu^.next;
-                   gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
-                   y:=y+1
-              end;
-              end;
+               if terpilih = i then
+               begin
+                    textbackground(4);
+                    gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
+                    y:=y+1;
+                    bantu:=bantu^.next;
+               end
+               else
+               begin
+                    textbackground(blue);
+                    gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
+                    y:=y+1;
+                    bantu:=bantu^.next;
+               end;
+          end;
 
      end;
 
@@ -337,12 +337,12 @@ begin
      bantu:=awal;
      for i:=1 to index do
           begin
-               bantu:=bantu^.next;
                id_obat:=bantu^.info.id_obat;
                nama:=bantu^.info.nama_obat;
                jenis:=bantu^.info.jenis;
                harga:=bantu^.info.harga;
                stok:=bantu^.info.stok;
+               bantu:=bantu^.next;
           end;
 
 
@@ -355,22 +355,39 @@ begin
 
      ketemu := false;
      bantu := awal;
-     while (ketemu = false) and (bantu <> akhir) do
-                 if (bantu^.info.id_obat = id_obat) then
-                    ketemu := true
-                 else
-                     bantu := bantu^.next;
-                 if (ketemu = true) then
-                 begin
-                      if Rnama_obat<>'' then
-                         bantu^.info.nama_obat:=Rnama_obat;
-                      if Rjenis<>'' then
-                         bantu^.info.jenis:=Rjenis;
-                      if IntToStr(Rharga)<>'' then
-                         bantu^.info.harga:=Rharga;
-                      if IntToStr(Rstok)<>'' then
-                         bantu^.info.stok:=Rstok;
-                 end;
+     hitungbdObat;
+     if (banyakobat=1) then
+     begin
+          if Rnama_obat<>'' then
+             awal^.info.nama_obat:=Rnama_obat;
+          if Rjenis<>'' then
+             awal^.info.jenis:=Rjenis;
+          if IntToStr(Rharga)<>'' then
+             awal^.info.harga:=Rharga;
+          if IntToStr(Rstok)<>'' then
+             awal^.info.stok:=Rstok;
+     end
+     else
+     begin
+          while (ketemu = false) and (bantu <> bantu^.prev) do
+                if (bantu^.info.id_obat = id_obat) then
+                   ketemu := true
+                else
+                    bantu := bantu^.next;
+                if (ketemu = true) then
+                begin
+                     if Rnama_obat<>'' then
+                        bantu^.info.nama_obat:=Rnama_obat;
+                     if Rjenis<>'' then
+                        bantu^.info.jenis:=Rjenis;
+                     if IntToStr(Rharga)<>'' then
+                        bantu^.info.harga:=Rharga;
+                     if IntToStr(Rstok)<>'' then
+                        bantu^.info.stok:=Rstok;
+                end;
+
+     end;
+
 
 
      gotoxy(5,15);write('Data berhasil Di Ubah');
@@ -449,16 +466,16 @@ begin
                if terpilih2 = i then
                begin
                     textbackground(4);
-                    bantu:=bantu^.next;
                     gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
                     y:=y+1;
+                    bantu:=bantu^.next;
                end
                else
                begin
                     textbackground(blue);
-                    bantu:=bantu^.next;
                     gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
-                    y:=y+1
+                    y:=y+1;
+                    bantu:=bantu^.next;
                end;
           end;
      end;
@@ -486,12 +503,34 @@ begin
      end;
 end;
 
+procedure hapusbelakang(var data:Obat;var awal,akhir:PDataObat);             //Prosedur Hapus Data Belakang
+begin
+     if awal=nil then
+        writeln('Data kosong, tidak ada yang dihapus')
+     else
+     if awal=akhir then
+     begin
+          data:=akhir^.info;
+          dispose(akhir);
+          awal:=nil;
+          akhir:=nil;
+     end
+     else
+     begin
+          data:=akhir^.info;
+          akhir:=akhir^.prev;
+          dispose(akhir^.next);
+          akhir^.next:=awal;
+          awal^.prev:=akhir;
+     end;
+end;
+
 procedure hapus_Obat(index:integer);
 var
    yt:char;
    x,j,i:integer;
    phapus,bantu:PDataObat;
-   ketemu : boolean;
+   ketemu,ketemudepan : boolean;
    nama,id_obat,jenis:string;
    data:Obat;
 
@@ -499,13 +538,14 @@ begin
      bersihin;
      kotak(4,55,2,10,BLUE,WHITE,'Hapus Data Obat');
      pemisah(4,55,4);
+     hitungbdObat;
 
      bantu:=awal;
      for i:=1 to index do
           begin
-               bantu:=bantu^.next;
                id_obat:=bantu^.info.id_obat;
                nama:=bantu^.info.nama_obat;
+               bantu:=bantu^.next;
           end;
 
      gotoxy(5,5);write('Hapus Data ID:',id_obat,'   Nama Obat : ',nama,' ?(y/t)');
@@ -513,23 +553,35 @@ begin
      if upcase(yt) = 'Y' then
      begin
           ketemu := false;
+          ketemudepan := false;
           bantu := awal;
-          while (ketemu = false) and (bantu <> akhir) do
-                 if (bantu^.info.id_obat = id_obat) then
-                    ketemu := true
-                 else
-                     bantu := bantu^.next;
-                 if (ketemu = true) then
+          if (banyakObat=1) then
+             hapusdepan(data,awal,akhir)
+          else
+          begin
+               while (ketemu = false) and (bantu <> bantu^.prev) do
+                if (bantu^.info.id_obat = id_obat) then
+                   ketemu:=true
+                else
+                    bantu := bantu^.next;
+                //cari ketemunya di awal atau akhir
+                 if (ketemu = true) and (bantu=awal) then
+                    hapusdepan(data,awal,akhir)
+                 else if (ketemu = true) and (bantu=akhir) then
+                      hapusbelakang(data,awal,akhir)
+                 else if (ketemu = true) then
                  begin
-
                       bantu^.next^.prev:=bantu^.prev;
                       bantu^.prev^.next:=bantu^.next;
                       bantu^.next:=nil;
                       bantu^.prev:=nil;
                       dispose(bantu);
-
                  end;
-          gotoxy(5,7);write('Data Berhasil Dihapus');
+          end;
+
+
+
+                 gotoxy(5,7);write('Data Berhasil Dihapus');
      end
      else if upcase(yt) = 'T' then
      begin
@@ -578,7 +630,15 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-
+//destroy data
+procedure hancurindata(var awal,akhir:PDataObat);
+var
+   data:Obat;
+begin
+     while awal<>nil do
+         hapusdepan(data,awal,akhir);
+     writeln('Data Berhasil dihancurkan');
+end;
 
 
 
@@ -672,7 +732,7 @@ begin
      Tmenu[7]:=' 7.                   ';
      Tmenu[8]:=' 8.                  ';
      Tmenu[9]:=' 9.             ';
-     Tmenu[10]:=' 10.  ';
+     Tmenu[10]:=' 10. Hapus Semua Data ';
      Tmenu[11]:=' 11. Simpan Ke File      ';
      Tmenu[12]:=' 12. Keluar                   ';
 end;
@@ -710,7 +770,7 @@ begin
           7:;
           8:;
           9:;
-          10:;
+          10:hancurindata(awal,akhir);
           11:simpansemuafile;
      end;
 end;
@@ -745,7 +805,7 @@ begin
 end;
 
 
-procedure testisi;
+procedure testisidata;
 begin
 
      TambahRecordObat(SRecObat,'005','Alkohol','botol',30000,70);
@@ -771,7 +831,7 @@ penciptaan(awal,akhir);
      bdpinjam:=0;
      bacasemuafile;
 
-     testisi;
+     testisidata;
 
      readln;
 
