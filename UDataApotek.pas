@@ -320,12 +320,10 @@ begin
      else
      begin
           gotoxy(5,5);writeln('Pilih Data yang mau diubah');
-          gotoxy(10,7);writeln(' ID Obat ',#179,'  Nama Obat  ');
+          gotoxy(8,7);writeln(' ID Obat ',#179,'  Nama Obat  ');
           hitungbdObat;
           bantu:=awal;
           y:=1;
-
-
           for i:=1 to banyakObat do
           begin
               if terpilih = i then
@@ -333,14 +331,14 @@ begin
                    textbackground(4);
 
                    bantu:=bantu^.next;
-                   gotoxy(10,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
+                   gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
                    y:=y+1;
               end
               else
               begin
                    textbackground(blue);
                    bantu:=bantu^.next;
-                   gotoxy(10,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
+                   gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
                    y:=y+1
               end;
               end;
@@ -403,10 +401,6 @@ begin
                  end;
 
 
-
-
-
-
      gotoxy(5,15);write('Data berhasil Di Ubah');
      gotoxy(5,16);write('Tekan enter untuk kembali ke menu');
      read;
@@ -453,7 +447,163 @@ end;
 
 
 
+//----------------------------------------------------------------------------------------------------------------------
+//Hapus DATA Obat
+//----------------------------------------------------------------------------------------------------------------------
+var
+   terpilih2:integer;
+procedure tulis_menuHapusObat(awal,akhir:PDataObat);
+var
+   i,y:integer;
+   bantu:PDataObat;
+begin
+     bersihin;
+     kotak(4,40,2,20,BLUE,WHITE,'Hapus Data Obat');
+     pemisah(4,40,4);
+     if awal=nil then
+     begin
+          gotoxy(4,6);write('Data Kosong. Tekan Enter Untuk Kembali !');
+     end
+     else
+     begin
+          gotoxy(5,5);writeln('Pilih Data Obat yang mau di hapus');
+          gotoxy(8,7);writeln(' ID Obat ',#179,' Nama Obat ');
+          hitungbdObat;
+          bantu:=awal;
+          y:=1;
+          for i:=1 to banyakObat do
+          for i:=1 to banyakObat do
+          begin
+               if terpilih2 = i then
+               begin
+                    textbackground(4);
+                    bantu:=bantu^.next;
+                    gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
+                    y:=y+1;
+               end
+               else
+               begin
+                    textbackground(blue);
+                    bantu:=bantu^.next;
+                    gotoxy(8,7+y);writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat);
+                    y:=y+1
+               end;
+          end;
+     end;
+end;
 
+procedure hapusdepan(var data:Obat;var awal,akhir:PDataObat);               //Prosedur Hapus Data Depan
+begin
+     if awal=nil then
+        writeln('Data kosong, tidak ada yang dihapus')
+     else
+     if awal=akhir then
+     begin
+          data:=awal^.info;
+          dispose(awal);
+          awal:=nil;
+          akhir:=nil;
+     end
+     else
+     begin
+          data:=awal^.info;
+          awal:=awal^.next;
+          dispose(awal^.prev);
+          awal^.prev:=akhir;
+          akhir^.next:=awal;
+     end;
+end;
+
+procedure hapus_Obat(index:integer);
+var
+   yt:char;
+   x,j,i:integer;
+   phapus,bantu:PDataObat;
+   ketemu : boolean;
+   nama,id_obat,jenis:string;
+   data:Obat;
+
+begin
+     bersihin;
+     kotak(4,55,2,10,BLUE,WHITE,'Hapus Data Obat');
+     pemisah(4,55,4);
+
+     bantu:=awal;
+     for i:=1 to index do
+          begin
+               bantu:=bantu^.next;
+               id_obat:=bantu^.info.id_obat;
+               nama:=bantu^.info.nama_obat;
+          end;
+
+     gotoxy(5,5);write('Hapus Data ID:',id_obat,'   Nama Obat : ',nama,' ?(y/t)');
+     read(yt);
+     if upcase(yt) = 'Y' then
+     begin
+          ketemu := false;
+          bantu := awal;
+          while (ketemu = false) and (bantu <> akhir) do
+                 if (bantu^.info.id_obat = id_obat) then
+                    ketemu := true
+                 else
+                     bantu := bantu^.next;
+                 if (ketemu = true) then
+                 begin
+
+                      bantu^.next^.prev:=bantu^.prev;
+                      bantu^.prev^.next:=bantu^.next;
+                      bantu^.next:=nil;
+                      bantu^.prev:=nil;
+                      dispose(bantu);
+
+                 end;
+          gotoxy(5,7);write('Data Berhasil Dihapus');
+     end
+     else if upcase(yt) = 'T' then
+     begin
+          gotoxy(5,7);write('Hapus Dibatalkan');
+     end;
+     gotoxy(5,8);write('Tekan enter untuk kembali ke menu');
+     readln;
+end;
+
+procedure pilih_ObatHapus;
+var
+   i:integer;
+begin
+     hitungbdObat;
+     terpilih2:=1;
+     repeat
+     clrscr;
+     tulis_menuHapusObat(awal,akhir);
+
+     tombol:=readkey;
+     if tombol=bawah then
+     begin
+          if terpilih2 <> banyakObat then
+             terpilih2:=terpilih2+1;
+     end
+
+     else if tombol=atas then
+     begin
+          terpilih2:=terpilih2-1;
+          if terpilih2 = 0 then
+             terpilih2:=terpilih2+1;
+     end
+     else if tombol=enter then
+     begin
+          clrscr;
+          hapus_Obat(terpilih2);
+     end;
+
+
+     //readln(i);
+     //terpilih:=i;
+     until tombol=enter;
+end;
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -622,7 +772,7 @@ begin
      Tmenu[3]:=' 3.     ';
      Tmenu[4]:=' 4.      ';
      Tmenu[5]:=' 5. Ubah Data Obat        ';
-     Tmenu[6]:=' 6.          ';
+     Tmenu[6]:=' 6. Hapus Data Obat         ';
      Tmenu[7]:=' 7.                   ';
      Tmenu[8]:=' 8.                  ';
      Tmenu[9]:=' 9.             ';
@@ -660,7 +810,7 @@ begin
           3:;
           4:;
           5:pilih_ObatUbah;
-          6:;
+          6:pilih_ObatHapus;
           7:;
           8:;
           9:;
