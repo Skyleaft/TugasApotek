@@ -709,7 +709,7 @@ begin
      end
      else
      begin
-          writeln('File Belum Ada. Tidak ada data yang terbaca');readln;
+          writeln('File Belum Ada. Tidak ada data yang terbaca');
      end;
 
 end;
@@ -804,6 +804,41 @@ begin
      until tombol=enter;
 end;
 
+procedure loading;
+var
+   i:integer;
+begin
+     writeln('loading....');
+
+     kotak(2,119,25,29,BLUE,WHITE,'Loading...');
+     for i :=1 to 113 do
+     begin
+          if (i=20) then
+          begin
+               textbackground(black);
+               gotoxy(1,2);writeln('Loading Tampilan....');
+          end
+          else if (i=60) then
+          begin
+               textbackground(black);
+               gotoxy(1,3);writeln('Mulai Membaca File....');
+          end
+          else if (i=100) then
+          begin
+               textbackground(black);
+               gotoxy(1,4);bacasemuafile;
+          end
+          else if (i=110) then
+          begin
+               textbackground(black);
+               gotoxy(1,5);writeln('Loading Selesai.');
+          end;
+          delay(40);
+          gotoxy(3+i,28);write(#219);
+     end;
+     gotoxy(2,23);write('Tekan Enter untuk Melanjutkan..........');
+end;
+
 
 procedure testisidata;
 begin
@@ -825,12 +860,10 @@ end;
 //mulai disini
 //----------------------------------------------------------------------------------------------------------------------
 begin
-penciptaan(awal,akhir);
+     penciptaan(awal,akhir);
 
-     bd:=0;
-     bdpinjam:=0;
-     bacasemuafile;
 
+     loading;
      testisidata;
 
      readln;
