@@ -14,32 +14,6 @@ const
      kiri=#75;
      kanan=#77;
 type
-    TAnggota=record
-                   id_anggota:string;
-                   nama:string;
-                   alamat:string;
-                   no_telp:string;
-                   pekerjaan:string;
-                   saldo:real;
-    end;
-    TPinjaman=record
-                   kd_pinjaman:string;
-                   id_anggota:string;
-                   tgl_pinjam:string;
-                   jml_pinjam:real;
-                   lama:integer;
-                   bunga:real;
-                   total:real;
-                   angsuran:real;
-                   end;
-    TKaryawan=record
-                    id_karyawan:string;
-                    nama_karyawan:string;
-                    jk:string;
-                    tgl_lahir:string;
-                    alamat:string;
-                    no_tlp:string;
-    end;
 
     Obat=record
                 id_obat:string;
@@ -66,8 +40,6 @@ var
    awal,akhir:PDataObat;
    banyakObat:integer;
 
-   data_anggota:Array[1..maks] of TAnggota;
-   data_pinjaman:Array[1..maksPinjaman] of TPinjaman;
    Tmenu:data_menu;
    bd,bdpinjam,pil:integer;
    YYYY,MM,DD : Word;
@@ -606,82 +578,6 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
-//----------------------------------------------------------------------------------------------------------------------
-//PINJAMAN
-//----------------------------------------------------------------------------------------------------------------------
-procedure pinjaman;
-var
-   id:string;
-   i,index,lama:integer;
-   ketemu:boolean;
-   tanggal,kdpinjam:string;
-   nominal,bunga,total,angsuran:real;
-   tbunga:real;
-
-
-begin
-     bersihin;
-     clrscr;
-     kotak(4,66,2,25,BLUE,WHITE,'Pinjaman');
-     pemisah(4,66,4);
-     gotoxy(5,5);writeln('Masukan Data Anggota');
-     gotoxy(5,6);write('ID Anggota : ');readln(id);
-     for i:=1 to bd do
-         if id = data_anggota[i].id_anggota then
-         begin
-              ketemu:=true;
-              index:=i;
-         end;
-         if ketemu = true then
-         begin
-              gotoxy(5,8);writeln('Nama Anggota : ',data_anggota[index].nama);
-              gotoxy(5,9);writeln('Alamat       : ',data_anggota[index].alamat);
-              gotoxy(5,10);writeln('Saldo        : Rp.',data_anggota[index].saldo:0:2);
-
-
-              writeln;
-              bdpinjam:=bdpinjam+1;
-              kdpinjam:='PJ00';
-              data_pinjaman[bdpinjam].kd_pinjaman:=kdpinjam+IntToStr(bdpinjam);
-              gotoxy(5,12);Writeln ('Kode Pinjaman : ',data_pinjaman[bdpinjam].kd_pinjaman);
-
-              data_pinjaman[bdpinjam].id_anggota:=data_anggota[index].id_anggota;
-
-
-              DeCodeDate (Date,YYYY,MM,DD);
-              tanggal:=format('%d/%d/%d',[dd,mm,yyyy]);
-              gotoxy(5,13);Writeln ('Tanggal Pinjam : ',tanggal);
-              data_pinjaman[bdpinjam].tgl_pinjam:=tanggal;
-
-              gotoxy(5,14);write('Masukan Nominal Pinjam : Rp.');readln(nominal);
-              gotoxy(5,15);write('Lama Pinjaman(Bulan) : ');readln(lama);
-              gotoxy(5,16);write('Bunga(Persen) : ');readln(bunga);
-              tbunga:=(bunga/100)*nominal;
-
-              total:=nominal+tbunga;
-              gotoxy(5,18);writeln('Total : Rp.',total:0:0);
-
-              angsuran:=total/lama;
-              gotoxy(5,19);writeln('Angsuran : Rp.',angsuran:0:0);
-
-              data_pinjaman[bdpinjam].jml_pinjam:=nominal;
-              data_pinjaman[bdpinjam].lama:=lama;
-              data_pinjaman[bdpinjam].bunga:=bunga;
-              data_pinjaman[bdpinjam].total:=total;
-              data_pinjaman[bdpinjam].angsuran:=angsuran;
-
-              gotoxy(5,23);write('Tekan Enter untuk kembali ke Menu');
-              read;
-          end
-          else
-              writeln('Data Tidak Ditemukan');
-          readln;
-end;
-//----------------------------------------------------------------------------------------------------------------------
 
 
 
