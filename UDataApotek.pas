@@ -296,6 +296,10 @@ begin
                                   if (upcase(j^.info.id_obat) > upcase(min^.info.id_Obat)) then
                                        min:=j;
                                 end;
+                                2 : begin //berdasarkan nama obat
+                                  if(upcase(j^.info.nama_obat) > upcase(min^.info.nama_obat)) then
+                                       min:=j;
+                                end;
                            end;
                            j:=j^.next;
                       end;
@@ -335,6 +339,10 @@ begin
                                   if (upcase(j^.info.id_obat) < upcase(min^.info.id_Obat)) then
                                        min:=j;
                                 end;
+                                2 :begin //berdasarkan nama obat
+                                  if (upcase(j^.info.nama_obat) < upcase(min^.info.nama_Obat)) then
+                                     min :=j;
+                                end;
                            end;
                            j:=j^.next;
                       end;
@@ -346,7 +354,6 @@ begin
                writeln('Data Berhasil Terurut. Tekan Enter untuk kembali...');read;
      end;
 end;
-
 procedure menu_pengurutan;
 var
    pil:integer;
@@ -366,6 +373,8 @@ begin
      case pil of
           1: pengurutanAsc(awal,akhir,1);  //note 1= berdasarkan id
           2: pengurutanDesc(awal,akhir,1);
+          3: pengurutanAsc(awal,akhir,2); // note 2=berdasarkan nama
+          4: pengurutanDesc(awal,akhir,2);
      end;
 end;
 
