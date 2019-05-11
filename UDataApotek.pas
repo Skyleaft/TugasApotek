@@ -882,7 +882,15 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 procedure isi_menu;
 begin
-
+     Tmenu[1]:=' '+#254+' Tambah Data Obat   ';
+     Tmenu[2]:=' '+#254+' Ubah Data Obat     ';
+     Tmenu[3]:=' '+#254+' Hapus Data Obat    ';
+     Tmenu[4]:=' '+#254+' Pengurutan         ';
+     Tmenu[5]:=' '+#254+' Tampilkan Data     ';
+     Tmenu[6]:=' '+#254+' Penjualan Obat     ';
+     Tmenu[7]:=' '+#254+' Hapus Semua Data   ';
+     Tmenu[8]:=' '+#254+' Simpan Ke File     ';
+     Tmenu[9]:=' '+#254+' Keluar             ';
 end;
 
 procedure tulis_menu;
@@ -909,7 +917,14 @@ end;
 procedure buka_menu(t:integer);
 begin
      case t of
-
+          1:tambah_Obat;
+          2:pilih_ObatUbah;
+          3:pilih_ObatHapus;
+          4:menu_pengurutan;
+          5:tampil_dataObat(awal,akhir);
+          6:menu_penjualan;
+          7:hancurindata(awal,akhir);
+          8:simpansemuafile;
 
      end;
 end;
@@ -919,6 +934,7 @@ begin
      terpilih:=1;
      repeat
            clrscr;
+           writeln;
            isi_menu;
            tulis_menu;
 
@@ -986,7 +1002,7 @@ begin
      sisipdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'006','Antimo','tablet',2500,89);
      sisipdepanObat(awal,akhir,SRecObat);
-     TambahRecordObat(SRecObat,'007','parah','botol',7500,7);
+     TambahRecordObat(SRecObat,'007','Paramex','botol',7500,7);
      sisipdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'0010','Obat Cacing','botol',8000,35);
      sisipdepanObat(awal,akhir,SRecObat);
@@ -1006,7 +1022,7 @@ begin
      //bacasemuafile;
      loading;        //note kalo kelamaan loading nya komenin
 
-     //testisidata;    //buat ngetest isi data
+     testisidata;    //buat ngetest isi data
 
      readln;
 
