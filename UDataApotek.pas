@@ -3,7 +3,7 @@ uses crt,sysutils;
 const
      maks=100;
      maksPinjaman=1000;
-     maks_menu=12;
+     maks_menu=9;
      garis_kiri=5;
      garis_kanan=60;
      garis_atas=3;
@@ -690,7 +690,6 @@ begin
           end;
 
 
-
                  gotoxy(5,7);write('Data Berhasil Dihapus');
      end
      else if upcase(yt) = 'T' then
@@ -740,7 +739,35 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+//----------------------------------------------------------------------------------------------------------------------
+//Menu Penjualan
+//----------------------------------------------------------------------------------------------------------------------
+procedure menu_penjualan;
+var
+   id_obat:string;
+   jumlah:integer;
+   yt:char;
+begin
+     bersihin;
+     kotak(4,50,2,20,BLUE,WHITE,'Penjualan Obat');
+     pemisah(4,50,4);
+     repeat
+
+     gotoxy(6,5);write('Masukan ID Obat : ');readln(id_obat);
+     gotoxy(6,6);write('Masukan Jumlah Beli : ');readln(jumlah);
+
+
+     until upcase(yt)='T';
+end;
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+//----------------------------------------------------------------------------------------------------------------------
 //destroy data
+//----------------------------------------------------------------------------------------------------------------------
 procedure hancurindata(var awal,akhir:PDataObat);
 var
    data:Obat;
@@ -874,7 +901,7 @@ begin
           3:pilih_ObatHapus;
           4:menu_pengurutan;
           5:tampil_dataObat(awal,akhir);
-          6:;
+          6:menu_penjualan;
           7:hancurindata(awal,akhir);
           8:simpansemuafile;
      end;
@@ -955,6 +982,8 @@ begin
      sisipdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'007','paramex','botol',7500,7);
      sisipdepanObat(awal,akhir,SRecObat);
+     TambahRecordObat(SRecObat,'0010','Obat Cacing','botol',8000,35);
+     sisipdepanObat(awal,akhir,SRecObat);
 
 end;
 
@@ -968,7 +997,7 @@ end;
 begin
      penciptaan(awal,akhir);
 
-     bacasemuafile;
+     //bacasemuafile;
      loading;        //note kalo kelamaan loading nya komenin
 
      testisidata;    //buat ngetest isi data
@@ -997,7 +1026,9 @@ begin
      seleksi_menu;
 
      readln;
-     until terpilih=12;
+     until terpilih=9;
+
+     simpansemuafile;
 
      read;
 end.
