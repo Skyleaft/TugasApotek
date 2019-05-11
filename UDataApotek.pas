@@ -300,6 +300,14 @@ begin
                                   if(upcase(j^.info.nama_obat) > upcase(min^.info.nama_obat)) then
                                        min:=j;
                                 end;
+                                3 : begin //berdasarkan harga obat
+                                  if((j^.info.harga) > (min^.info.harga)) then
+                                       min:=j;
+                                end;
+                                4 : begin //berdasarkan harga obat
+                                  if((j^.info.stok) > (min^.info.stok)) then
+                                       min:=j;
+                                end;
                            end;
                            j:=j^.next;
                       end;
@@ -343,6 +351,14 @@ begin
                                   if (upcase(j^.info.nama_obat) < upcase(min^.info.nama_Obat)) then
                                      min :=j;
                                 end;
+                                3 :begin //berdasarkan harga obat
+                                  if ((j^.info.harga) < (min^.info.harga)) then
+                                     min :=j;
+                                end;
+                                4 :begin //berdasarkan stok obat
+                                  if ((j^.info.stok) < (min^.info.stok)) then
+                                     min :=j;
+                                end;
                            end;
                            j:=j^.next;
                       end;
@@ -368,13 +384,19 @@ begin
      gotoxy(6,9);writeln('4. Nama Obat Descending');
      gotoxy(6,10);writeln('5. Harga Ascending');
      gotoxy(6,11);writeln('6. Harga Descending');
+     gotoxy(6,12);writeln('7. Stok Ascending');
+     gotoxy(6,13);writeln('8. Stok Descending');
 
-     gotoxy(6,13);write('Pilihan Anda (1-6)?: ');read(pil);
+     gotoxy(6,14);write('Pilihan Anda (1-6)?: ');read(pil);
      case pil of
           1: pengurutanAsc(awal,akhir,1);  //note 1= berdasarkan id
           2: pengurutanDesc(awal,akhir,1);
           3: pengurutanAsc(awal,akhir,2); // note 2=berdasarkan nama
           4: pengurutanDesc(awal,akhir,2);
+          5: pengurutanAsc(awal,akhir,3); // note 3=berdasarkan harga
+          6: pengurutanDesc(awal,akhir,3);
+          7: pengurutanAsc(awal,akhir,4); // note 3=berdasarkan harga
+          8: pengurutanDesc(awal,akhir,4);
      end;
 end;
 
@@ -833,16 +855,18 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 procedure isi_menu;
 begin
-
-     Tmenu[1]:=' '+#254+' Tambah Data Obat   ';
-     Tmenu[2]:=' '+#254+' Ubah Data Obat     ';
-     Tmenu[3]:=' '+#254+' Hapus Data Obat    ';
-     Tmenu[4]:=' '+#254+' Pengurutan         ';
-     Tmenu[5]:=' '+#254+' Tampilkan Data     ';
-     Tmenu[6]:=' '+#254+' Penjualan Obat     ';
-     Tmenu[7]:=' '+#254+' Hapus Semua Data   ';
-     Tmenu[8]:=' '+#254+' Simpan Ke File     ';
-     Tmenu[9]:=' '+#254+' Keluar             ';
+     Tmenu[1]:=' 1. Tambah Obat       ';
+     Tmenu[2]:=' 2. Tampil Data Obat    ';
+     Tmenu[3]:=' 3. Pengurutan  ';
+     Tmenu[4]:=' 4.      ';
+     Tmenu[5]:=' 5. Ubah Data Obat        ';
+     Tmenu[6]:=' 6. Hapus Data Obat         ';
+     Tmenu[7]:=' 7.                   ';
+     Tmenu[8]:=' 8.                  ';
+     Tmenu[9]:=' 9.             ';
+     Tmenu[10]:=' 10. Hapus Semua Data ';
+     Tmenu[11]:=' 11. Simpan Ke File      ';
+     Tmenu[12]:=' 12. Keluar                   ';
 end;
 
 procedure tulis_menu;
@@ -870,13 +894,16 @@ procedure buka_menu(t:integer);
 begin
      case t of
           1:tambah_Obat;
-          2:pilih_ObatUbah;
-          3:pilih_ObatHapus;
-          4:menu_pengurutan;
-          5:tampil_dataObat(awal,akhir);
-          6:;
-          7:hancurindata(awal,akhir);
-          8:simpansemuafile;
+          2:tampil_dataObat(awal,akhir);
+          3:menu_pengurutan;
+          4:;
+          5:pilih_ObatUbah;
+          6:pilih_ObatHapus;
+          7:;
+          8:;
+          9:;
+          10:hancurindata(awal,akhir);
+          11:simpansemuafile;
      end;
 end;
 
@@ -885,7 +912,6 @@ begin
      terpilih:=1;
      repeat
            clrscr;
-           writeln();
            isi_menu;
            tulis_menu;
 
@@ -953,7 +979,7 @@ begin
      sisipdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'006','Antimo','tablet',2500,89);
      sisipdepanObat(awal,akhir,SRecObat);
-     TambahRecordObat(SRecObat,'007','paramex','botol',7500,7);
+     TambahRecordObat(SRecObat,'007','parah','botol',7500,7);
      sisipdepanObat(awal,akhir,SRecObat);
 
 end;
@@ -968,10 +994,10 @@ end;
 begin
      penciptaan(awal,akhir);
 
-     bacasemuafile;
+     //bacasemuafile;
      loading;        //note kalo kelamaan loading nya komenin
 
-     testisidata;    //buat ngetest isi data
+     //testisidata;    //buat ngetest isi data
 
      readln;
 
@@ -993,7 +1019,6 @@ begin
 
 
      window(5,5,52,19);
-
      seleksi_menu;
 
      readln;
