@@ -216,6 +216,39 @@ begin
 
 end;
 //----------------------------------------------------------------------------------------------------------------------
+procedure pengurutan(awal,akhir:PDataObat);
+var
+   i,j,min:PDataObat;
+   temp:string;
+begin
+     if awal=nil then
+        writeln('Data Masih Kosong')
+     else
+     if awal=akhir then
+        writeln('Data cuma 1')
+     else
+     begin
+          i:=awal;
+          while i^.next<>akhir do
+          begin
+               min:=i;
+               j:=i^.next;
+               while j<>nil do
+               begin
+                    if j^.info.id_obat<min^.info.id_obat then
+                       min:=j;
+                    j:=j^.next;
+               end;
+               if i<>min then
+               begin
+                    temp:=i^.info.id_obat;
+                    i^.info:=min^.info;
+                    min^.info.id_obat:=temp;
+               end;
+               i:=i^.next;
+          end;
+     end;
+end;
 
 
 
@@ -725,7 +758,7 @@ procedure isi_menu;
 begin
      Tmenu[1]:=' 1. Tambah Obat       ';
      Tmenu[2]:=' 2. Tampil Data Obat    ';
-     Tmenu[3]:=' 3.     ';
+     Tmenu[3]:=' 3. Pengurutan Id Obat     ';
      Tmenu[4]:=' 4.      ';
      Tmenu[5]:=' 5. Ubah Data Obat        ';
      Tmenu[6]:=' 6. Hapus Data Obat         ';
@@ -763,7 +796,7 @@ begin
      case t of
           1:tambah_Obat;
           2:tampil_dataObat(awal,akhir);
-          3:;
+          3:pengurutan(awal,akhir);
           4:;
           5:pilih_ObatUbah;
           6:pilih_ObatHapus;
