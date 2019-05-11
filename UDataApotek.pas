@@ -1020,8 +1020,8 @@ end;
 begin
      penciptaan(awal,akhir);
 
-     bacasemuafile;
-     //loading;        //note kalo kelamaan loading nya komenin
+     //bacasemuafile;
+     loading;        //note kalo kelamaan loading nya komenin
 
      //testisidata;    //buat ngetest isi data
 
