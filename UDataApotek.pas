@@ -3,7 +3,7 @@ uses crt,sysutils;
 const
      maks=100;
      maksPinjaman=1000;
-     maks_menu=9;
+     maks_menu=8;
      garis_kiri=5;
      garis_kanan=60;
      garis_atas=3;
@@ -124,6 +124,143 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 
+//----------------------------------------------------------------------------------------------------------------------
+//Pengurutan
+//----------------------------------------------------------------------------------------------------------------------
+procedure pengurutanDesc(awal,akhir:PDataObat;berdasarkan:integer);
+var
+   i,j,min:PDataObat;
+   temp:Obat;
+   x,y:integer;
+begin
+     if awal=nil then
+        writeln('Data Masih Kosong')
+     else
+     if awal=akhir then
+        writeln('Data cuma 1')
+     else
+     begin
+          hitungbdObat;
+          i:=awal;
+          //
+           for x:=1 to banyakObat do
+           begin
+                min:=i;
+                j:= i^.next;
+                for y:=x+1 to banyakObat do
+                      begin
+                           case berdasarkan of
+                                1 :begin //berdasarkan id obat
+                                  if (upcase(j^.info.id_obat) > upcase(min^.info.id_Obat)) then
+                                       min:=j;
+                                end;
+                                2 : begin //berdasarkan nama obat
+                                  if(upcase(j^.info.nama_obat) > upcase(min^.info.nama_obat)) then
+                                       min:=j;
+                                end;
+                                3 : begin //berdasarkan harga obat
+                                  if((j^.info.harga) > (min^.info.harga)) then
+                                       min:=j;
+                                end;
+                                4 : begin //berdasarkan harga obat
+                                  if((j^.info.stok) > (min^.info.stok)) then
+                                       min:=j;
+                                end;
+                           end;
+                           j:=j^.next;
+                      end;
+                    temp := i^.info;
+                    i^.info:= min^.info;
+                    min^.info:=temp;
+                    i:=i^.next;
+                end;
+
+     end;
+end;
+
+procedure pengurutanAsc(awal,akhir:PDataObat;berdasarkan:integer);
+var
+   i,j,min:PDataObat;
+   temp:Obat;
+   x,y:integer;
+begin
+     if awal=nil then
+        writeln('Data Masih Kosong')
+     else
+     if awal=akhir then
+        writeln('Data cuma 1')
+     else
+     begin
+          hitungbdObat;
+          i:=awal;
+          //
+           for x:=1 to banyakObat do
+           begin
+                min:=i;
+                j:= i^.next;
+                for y:=x+1 to banyakObat do
+                      begin
+                               case berdasarkan of
+                                1 :begin //berdasarkan id obat
+                                  if (upcase(j^.info.id_obat) < upcase(min^.info.id_Obat)) then
+                                       min:=j;
+                                end;
+                                2 :begin //berdasarkan nama obat
+                                  if (upcase(j^.info.nama_obat) < upcase(min^.info.nama_Obat)) then
+                                     min :=j;
+                                end;
+                                3 :begin //berdasarkan harga obat
+                                  if ((j^.info.harga) < (min^.info.harga)) then
+                                     min :=j;
+                                end;
+                                4 :begin //berdasarkan stok obat
+                                  if ((j^.info.stok) < (min^.info.stok)) then
+                                     min :=j;
+                                end;
+                           end;
+                           j:=j^.next;
+                      end;
+                    temp := i^.info;
+                    i^.info:= min^.info;
+                    min^.info:=temp;
+                    i:=i^.next;
+                end;
+
+     end;
+end;
+procedure menu_pengurutan;
+var
+   pil:integer;
+begin
+     bersihin;
+     kotak(4,50,2,20,BLUE,WHITE,'Pengurutan Data');
+     pemisah(4,50,4);
+     gotoxy(6,5);writeln('Urut Berdasarkan : ');
+     gotoxy(6,6);writeln('1. ID Obat Ascending');
+     gotoxy(6,7);writeln('2. ID Obat Descending');
+     gotoxy(6,8);writeln('3. Nama Obat Ascending');
+     gotoxy(6,9);writeln('4. Nama Obat Descending');
+     gotoxy(6,10);writeln('5. Harga Ascending');
+     gotoxy(6,11);writeln('6. Harga Descending');
+     gotoxy(6,12);writeln('7. Stok Ascending');
+     gotoxy(6,13);writeln('8. Stok Descending');
+
+     gotoxy(6,15);write('Pilihan Anda (1-8)?: ');read(pil);
+     case pil of
+          1: pengurutanAsc(awal,akhir,1);  //note 1= berdasarkan id
+          2: pengurutanDesc(awal,akhir,1);
+          3: pengurutanAsc(awal,akhir,2); // note 2=berdasarkan nama
+          4: pengurutanDesc(awal,akhir,2);
+          5: pengurutanAsc(awal,akhir,3); // note 3=berdasarkan harga
+          6: pengurutanDesc(awal,akhir,3);
+          7: pengurutanAsc(awal,akhir,4); // note 4=berdasarkan stok
+          8: pengurutanDesc(awal,akhir,4);
+     end;
+end;
+
+//----------------------------------------------------------------------------------------------------------------------
+
+
 
 //----------------------------------------------------------------------------------------------------------------------
 //tambah data obat
@@ -187,19 +324,41 @@ procedure tambah_Obat;
 var
    Rid_obat,Rnama_obat,Rjenis:string;
    Rharga,Rstok:integer;
-
+   kode:integer;
+   i:integer;
+   bantu:PDataObat;
 begin
      clrscr;
      bersihin;
           kotak(4,50,2,20,BLUE,WHITE,'Tambah Data Obat');
           pemisah(4,50,4);
 
+          if (awal=nil) then
+             Rid_obat:='OBT-001'
+          else
+          begin
+               hitungbdObat;
+               bantu:=awal;
+               pengurutanAsc(awal,akhir,1);
+               for i:=1 to banyakObat do
+               begin
+                    Rid_obat:=bantu^.info.id_obat;
+                    bantu:=bantu^.next;
 
+               end;
+               kode:= StrToInt(RightStr(Rid_obat,3)) + 1;
+               if(kode<10) then
+                  Rid_obat:='OBT-00'+IntToStr(kode)
+               else if (kode<100) then
+                    Rid_obat:='OBT-0'+IntToStr(kode)
+               else
+                   Rid_obat:='OBT-'+IntToStr(kode);
+          end;
 
 
 
           gotoxy(6,5);writeln('Masukan Data Obat ');
-          gotoxy(6,6);write('id Obat    : ');readln(Rid_obat);
+          gotoxy(6,6);write('id Obat    : ',Rid_obat);
           gotoxy(6,7);write('Nama Obat  : ');readln(Rnama_obat);
           gotoxy(6,8);write('Jenis      : ');readln(Rjenis);
           gotoxy(6,9);write('Harga      : ');readln(Rharga);
@@ -226,7 +385,7 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 procedure tampil_dataObat(awal,akhir:PDataObat);
 var
-   i,j,y : integer;
+   i,j,y,tstok,tharga : integer;
    bantu:PDataObat;
 begin
      bersihin;
@@ -249,13 +408,15 @@ begin
           begin
                gotoxy(4,4+y);
                writeln(' ',bantu^.info.id_obat:7,' ',#179,' ',bantu^.info.nama_obat:19,' ',#179,' ',bantu^.info.jenis:10,' ',#179,' Rp.',bantu^.info.harga:8,' ',#179,' ',bantu^.info.stok:5,'  ',#179);
+               tstok:=tstok+bantu^.info.stok;
+               tharga:=tharga+bantu^.info.harga;
                y:=y+1;
                bantu:=bantu^.next;
 
           end;
 
           pemisah(1,120,27);
-          gotoxy(4,28);write('Jumlah Obat : ',banyakObat);
+          gotoxy(4,28);write('Jumlah Obat : ',banyakObat,'         Total Stok Obat : ',tstok,'         Total Harga Obat : Rp.',tharga);
           gotoxy(4,29);write('Tekan enter untuk kembali ke menu                                                        !note : Jangan di maximize');
      end;
      read;
@@ -266,141 +427,6 @@ end;
 
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//Pengurutan
-//----------------------------------------------------------------------------------------------------------------------
-procedure pengurutanDesc(awal,akhir:PDataObat;berdasarkan:integer);
-var
-   i,j,min:PDataObat;
-   temp:Obat;
-   x,y:integer;
-begin
-     if awal=nil then
-        writeln('Data Masih Kosong')
-     else
-     if awal=akhir then
-        writeln('Data cuma 1')
-     else
-     begin
-          hitungbdObat;
-          i:=awal;
-          //
-           for x:=1 to banyakObat do
-           begin
-                min:=i;
-                j:= i^.next;
-                for y:=x+1 to banyakObat do
-                      begin
-                           case berdasarkan of
-                                1 :begin //berdasarkan id obat
-                                  if (upcase(j^.info.id_obat) > upcase(min^.info.id_Obat)) then
-                                       min:=j;
-                                end;
-                                2 : begin //berdasarkan nama obat
-                                  if(upcase(j^.info.nama_obat) > upcase(min^.info.nama_obat)) then
-                                       min:=j;
-                                end;
-                                3 : begin //berdasarkan harga obat
-                                  if((j^.info.harga) > (min^.info.harga)) then
-                                       min:=j;
-                                end;
-                                4 : begin //berdasarkan harga obat
-                                  if((j^.info.stok) > (min^.info.stok)) then
-                                       min:=j;
-                                end;
-                           end;
-                           j:=j^.next;
-                      end;
-                    temp := i^.info;
-                    i^.info:= min^.info;
-                    min^.info:=temp;
-                    i:=i^.next;
-                end;
-               writeln('Data Berhasil Terurut. Tekan Enter untuk kembali...');read;
-     end;
-end;
-
-procedure pengurutanAsc(awal,akhir:PDataObat;berdasarkan:integer);
-var
-   i,j,min:PDataObat;
-   temp:Obat;
-   x,y:integer;
-begin
-     if awal=nil then
-        writeln('Data Masih Kosong')
-     else
-     if awal=akhir then
-        writeln('Data cuma 1')
-     else
-     begin
-          hitungbdObat;
-          i:=awal;
-          //
-           for x:=1 to banyakObat do
-           begin
-                min:=i;
-                j:= i^.next;
-                for y:=x+1 to banyakObat do
-                      begin
-                           case berdasarkan of
-                                1 :begin //berdasarkan id obat
-                                  if (upcase(j^.info.id_obat) < upcase(min^.info.id_Obat)) then
-                                       min:=j;
-                                end;
-                                2 :begin //berdasarkan nama obat
-                                  if (upcase(j^.info.nama_obat) < upcase(min^.info.nama_Obat)) then
-                                     min :=j;
-                                end;
-                                3 :begin //berdasarkan harga obat
-                                  if ((j^.info.harga) < (min^.info.harga)) then
-                                     min :=j;
-                                end;
-                                4 :begin //berdasarkan stok obat
-                                  if ((j^.info.stok) < (min^.info.stok)) then
-                                     min :=j;
-                                end;
-                           end;
-                           j:=j^.next;
-                      end;
-                    temp := i^.info;
-                    i^.info:= min^.info;
-                    min^.info:=temp;
-                    i:=i^.next;
-                end;
-               writeln('Data Berhasil Terurut. Tekan Enter untuk kembali...');read;
-     end;
-end;
-procedure menu_pengurutan;
-var
-   pil:integer;
-begin
-     bersihin;
-     kotak(4,50,2,20,BLUE,WHITE,'Pengurutan Data');
-     pemisah(4,50,4);
-     gotoxy(6,5);writeln('Urut Berdasarkan : ');
-     gotoxy(6,6);writeln('1. ID Obat Ascending');
-     gotoxy(6,7);writeln('2. ID Obat Descending');
-     gotoxy(6,8);writeln('3. Nama Obat Ascending');
-     gotoxy(6,9);writeln('4. Nama Obat Descending');
-     gotoxy(6,10);writeln('5. Harga Ascending');
-     gotoxy(6,11);writeln('6. Harga Descending');
-     gotoxy(6,12);writeln('7. Stok Ascending');
-     gotoxy(6,13);writeln('8. Stok Descending');
-
-     gotoxy(6,14);write('Pilihan Anda (1-6)?: ');read(pil);
-     case pil of
-          1: pengurutanAsc(awal,akhir,1);  //note 1= berdasarkan id
-          2: pengurutanDesc(awal,akhir,1);
-          3: pengurutanAsc(awal,akhir,2); // note 2=berdasarkan nama
-          4: pengurutanDesc(awal,akhir,2);
-          5: pengurutanAsc(awal,akhir,3); // note 3=berdasarkan harga
-          6: pengurutanDesc(awal,akhir,3);
-          7: pengurutanAsc(awal,akhir,4); // note 3=berdasarkan harga
-          8: pengurutanDesc(awal,akhir,4);
-     end;
-end;
-
-//----------------------------------------------------------------------------------------------------------------------
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -416,7 +442,7 @@ var
    bantu:PDataObat;
 begin
      bersihin;
-     kotak(4,40,2,20,BLUE,WHITE,'Ubah Data Obat');
+     kotak(4,40,2,29,BLUE,WHITE,'Ubah Data Obat');
      pemisah(4,40,4);
      if awal=nil then
      begin
@@ -446,7 +472,6 @@ begin
                     bantu:=bantu^.next;
                end;
           end;
-          writeln('Data Berhasil Terurut');
      end;
 
 
@@ -579,7 +604,7 @@ var
    bantu:PDataObat;
 begin
      bersihin;
-     kotak(4,40,2,20,BLUE,WHITE,'Hapus Data Obat');
+     kotak(4,40,2,29,BLUE,WHITE,'Hapus Data Obat');
      pemisah(4,40,4);
      if awal=nil then
      begin
@@ -680,7 +705,9 @@ begin
                bantu:=bantu^.next;
           end;
 
-     gotoxy(5,5);write('Hapus Data ID:',id_obat,'   Nama Obat : ',nama,' ?(y/t)');
+     gotoxy(6,5);write('ID Obat    : ',id_obat);
+     gotoxy(6,6);write('Nama Obat : ',nama);
+     gotoxy(6,8);write('Yakin mau dihapus? (y/t) : ');
      read(yt);
      if upcase(yt) = 'Y' then
      begin
@@ -712,13 +739,13 @@ begin
           end;
 
 
-                 gotoxy(5,7);write('Data Berhasil Dihapus');
+                 gotoxy(6,8);write('Data Berhasil Dihapus          ');
      end
      else if upcase(yt) = 'T' then
      begin
-          gotoxy(5,7);write('Hapus Dibatalkan');
+          gotoxy(6,8);write('Hapus Dibatalkan         ');
      end;
-     gotoxy(5,8);write('Tekan enter untuk kembali ke menu');
+     gotoxy(6,9);write('Tekan enter untuk kembali ke menu');
      readln;
 end;
 
@@ -761,30 +788,6 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 
 
-//----------------------------------------------------------------------------------------------------------------------
-//Menu Penjualan
-//----------------------------------------------------------------------------------------------------------------------
-procedure menu_penjualan;
-var
-   id_obat:string;
-   jumlah:integer;
-   yt:char;
-begin
-     bersihin;
-     kotak(4,50,2,20,BLUE,WHITE,'Penjualan Obat');
-     pemisah(4,50,4);
-     repeat
-
-     gotoxy(6,5);write('Masukan ID Obat : ');readln(id_obat);
-     gotoxy(6,6);write('Masukan Jumlah Beli : ');readln(jumlah);
-
-
-     until upcase(yt)='T';
-end;
-
-
-//----------------------------------------------------------------------------------------------------------------------
-
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -795,7 +798,7 @@ var
    data:Obat;
 begin
      while awal<>nil do
-         hapusdepan(data,awal,akhir);
+           hapusdepan(data,awal,akhir);
      writeln('Data Berhasil dihancurkan');
 end;
 
@@ -887,10 +890,9 @@ begin
      Tmenu[3]:=' '+#254+' Hapus Data Obat    ';
      Tmenu[4]:=' '+#254+' Pengurutan         ';
      Tmenu[5]:=' '+#254+' Tampilkan Data     ';
-     Tmenu[6]:=' '+#254+' Penjualan Obat     ';
-     Tmenu[7]:=' '+#254+' Hapus Semua Data   ';
-     Tmenu[8]:=' '+#254+' Simpan Ke File     ';
-     Tmenu[9]:=' '+#254+' Keluar             ';
+     Tmenu[6]:=' '+#254+' Hapus Semua Data   ';
+     Tmenu[7]:=' '+#254+' Simpan Ke File     ';
+     Tmenu[8]:=' '+#254+' Keluar             ';
 end;
 
 procedure tulis_menu;
@@ -922,9 +924,8 @@ begin
           3:pilih_ObatHapus;
           4:menu_pengurutan;
           5:tampil_dataObat(awal,akhir);
-          6:menu_penjualan;
-          7:hancurindata(awal,akhir);
-          8:simpansemuafile;
+          6:hancurindata(awal,akhir);
+          7:simpansemuafile;
 
      end;
 end;
@@ -998,13 +999,13 @@ end;
 procedure testisidata;
 begin
 
-     TambahRecordObat(SRecObat,'005','Alkohol','botol',30000,70);
+     TambahRecordObat(SRecObat,'OBT-001','Alkohol','botol',30000,70);
      sisipdepanObat(awal,akhir,SRecObat);
-     TambahRecordObat(SRecObat,'006','Antimo','tablet',2500,89);
+     TambahRecordObat(SRecObat,'OBT-002','Antimo','tablet',2500,89);
      sisipdepanObat(awal,akhir,SRecObat);
-     TambahRecordObat(SRecObat,'007','Paramex','botol',7500,7);
+     TambahRecordObat(SRecObat,'OBT-003','Paramex','botol',7500,7);
      sisipdepanObat(awal,akhir,SRecObat);
-     TambahRecordObat(SRecObat,'0010','Obat Cacing','botol',8000,35);
+     TambahRecordObat(SRecObat,'OBT-004','Obat Cacing','botol',8000,35);
      sisipdepanObat(awal,akhir,SRecObat);
 
 end;
@@ -1019,10 +1020,10 @@ end;
 begin
      penciptaan(awal,akhir);
 
-     //bacasemuafile;
-     loading;        //note kalo kelamaan loading nya komenin
+     bacasemuafile;
+     //loading;        //note kalo kelamaan loading nya komenin
 
-     testisidata;    //buat ngetest isi data
+     //testisidata;    //buat ngetest isi data
 
      readln;
 
@@ -1047,7 +1048,7 @@ begin
      seleksi_menu;
 
      readln;
-     until terpilih=9;
+     until terpilih=8;
 
      simpansemuafile;
 
