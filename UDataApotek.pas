@@ -296,6 +296,9 @@ begin
                                   if (upcase(j^.info.id_obat) > upcase(min^.info.id_Obat)) then
                                        min:=j;
                                 end;
+                                2  :begin  //lanjutin
+
+                                end;
                            end;
                            j:=j^.next;
                       end;
@@ -366,6 +369,7 @@ begin
      case pil of
           1: pengurutanAsc(awal,akhir,1);  //note 1= berdasarkan id
           2: pengurutanDesc(awal,akhir,1);
+          3: ; //lanjutin
      end;
 end;
 
@@ -824,18 +828,16 @@ end;
 //----------------------------------------------------------------------------------------------------------------------
 procedure isi_menu;
 begin
-     Tmenu[1]:=' 1. Tambah Obat       ';
-     Tmenu[2]:=' 2. Tampil Data Obat    ';
-     Tmenu[3]:=' 3. Pengurutan  ';
-     Tmenu[4]:=' 4.      ';
-     Tmenu[5]:=' 5. Ubah Data Obat        ';
-     Tmenu[6]:=' 6. Hapus Data Obat         ';
-     Tmenu[7]:=' 7.                   ';
-     Tmenu[8]:=' 8.                  ';
-     Tmenu[9]:=' 9.             ';
-     Tmenu[10]:=' 10. Hapus Semua Data ';
-     Tmenu[11]:=' 11. Simpan Ke File      ';
-     Tmenu[12]:=' 12. Keluar                   ';
+
+     Tmenu[1]:=' '+#254+' Tambah Data Obat   ';
+     Tmenu[2]:=' '+#254+' Ubah Data Obat     ';
+     Tmenu[3]:=' '+#254+' Hapus Data Obat    ';
+     Tmenu[4]:=' '+#254+' Pengurutan         ';
+     Tmenu[5]:=' '+#254+' Tampilkan Data     ';
+     Tmenu[6]:=' '+#254+' Penjualan Obat     ';
+     Tmenu[7]:=' '+#254+' Hapus Semua Data   ';
+     Tmenu[8]:=' '+#254+' Simpan Ke File     ';
+     Tmenu[9]:=' '+#254+' Keluar             ';
 end;
 
 procedure tulis_menu;
@@ -863,16 +865,13 @@ procedure buka_menu(t:integer);
 begin
      case t of
           1:tambah_Obat;
-          2:tampil_dataObat(awal,akhir);
-          3:menu_pengurutan;
-          4:;
-          5:pilih_ObatUbah;
-          6:pilih_ObatHapus;
-          7:;
-          8:;
-          9:;
-          10:hancurindata(awal,akhir);
-          11:simpansemuafile;
+          2:pilih_ObatUbah;
+          3:pilih_ObatHapus;
+          4:menu_pengurutan;
+          5:tampil_dataObat(awal,akhir);
+          6:;
+          7:hancurindata(awal,akhir);
+          8:simpansemuafile;
      end;
 end;
 
@@ -881,6 +880,7 @@ begin
      terpilih:=1;
      repeat
            clrscr;
+           writeln();
            isi_menu;
            tulis_menu;
 
@@ -963,8 +963,8 @@ end;
 begin
      penciptaan(awal,akhir);
 
-     //bacasemuafile;
-     loading;        //note kalo kelamaan loading nya komenin
+     bacasemuafile;
+     //loading;        //note kalo kelamaan loading nya komenin
 
      //testisidata;    //buat ngetest isi data
 
@@ -988,6 +988,7 @@ begin
 
 
      window(5,5,52,19);
+
      seleksi_menu;
 
      readln;
