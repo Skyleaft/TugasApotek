@@ -953,7 +953,7 @@ begin
      sisipdepanObat(awal,akhir,SRecObat);
      TambahRecordObat(SRecObat,'006','Antimo','tablet',2500,89);
      sisipdepanObat(awal,akhir,SRecObat);
-     TambahRecordObat(SRecObat,'007','parah','botol',7500,7);
+     TambahRecordObat(SRecObat,'007','paramex','botol',7500,7);
      sisipdepanObat(awal,akhir,SRecObat);
 
 end;
@@ -969,9 +969,9 @@ begin
      penciptaan(awal,akhir);
 
      bacasemuafile;
-     //loading;        //note kalo kelamaan loading nya komenin
+     loading;        //note kalo kelamaan loading nya komenin
 
-     //testisidata;    //buat ngetest isi data
+     testisidata;    //buat ngetest isi data
 
      readln;
 
