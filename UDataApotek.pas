@@ -3,7 +3,7 @@ uses crt,sysutils;
 const
      maks=100;
      maksPinjaman=1000;
-     maks_menu=8;
+     maks_menu=9;
      garis_kiri=5;
      garis_kanan=60;
      garis_atas=3;
@@ -136,9 +136,6 @@ begin
      if awal=nil then
         writeln('Data Masih Kosong')
      else
-     if awal=akhir then
-        writeln('Data cuma 1')
-     else
      begin
           hitungbdObat;
           i:=awal;
@@ -186,9 +183,6 @@ var
 begin
      if awal=nil then
         writeln('Data Masih Kosong')
-     else
-     if awal=akhir then
-        writeln('Data cuma 1')
      else
      begin
           hitungbdObat;
@@ -362,7 +356,7 @@ begin
           gotoxy(6,7);write('Nama Obat  : ');readln(Rnama_obat);
           gotoxy(6,8);write('Jenis      : ');readln(Rjenis);
           gotoxy(6,9);write('Harga      : ');readln(Rharga);
-          gotoxy(6,10);write('Stok      : ');readln(Rstok);
+          gotoxy(6,10);write('Stok       : ');readln(Rstok);
 
           TambahRecordObat(SRecObat,Rid_obat,Rnama_obat,Rjenis,Rharga,Rstok);
           sisipdepanObat(awal,akhir,SRecObat);
@@ -395,6 +389,8 @@ begin
      //                                   1234567890123456789012        1234567890123      1234567890123456       12345678901234
      gotoxy(4,4);writeln(' ID Obat ',#179,'      Nama Obat      ',#179,'    Jenis   ',#179,'    Harga    ',#179,'  Stok  ',#179);
      
+     tstok:=0;
+     tharga:=0;
      if awal=nil then
      begin
           gotoxy(5,6);write('Data Kosong. Tekan Enter Untuk Kembali !');
@@ -426,7 +422,98 @@ end;
 
 
 
+//----------------------------------------------------------------------------------------------------------------------
+//Pencarian DATA
+//----------------------------------------------------------------------------------------------------------------------
+procedure pencarian(awal,akhir:PDataObat;Berdasarkan:integer;cari:string);
+var
+   bantu:PDataObat;
+   temp:Obat;
+   i,y:integer;
+   id_obat,nama,jenis:string;
+   harga,stok:integer;
+   ketemu:boolean;
+begin
+     if awal=nil then
+     begin
+        gotoxy(13,11);writeln('Data Masih Kosong');
+     end
+     else
+     begin
+          hitungbdObat;
+          bantu:=awal;
+          ketemu:=false;
+          for i:=1 to banyakObat do
+          begin
+               case Berdasarkan of
+               1:begin
+                      if(bantu^.info.id_obat=cari) then
+                      begin
+                           ketemu:=true;
+                           id_obat:=bantu^.info.id_obat;
+                           nama:=bantu^.info.nama_obat;
+                           jenis:=bantu^.info.jenis;
+                           harga:=bantu^.info.harga;
+                           stok:=bantu^.info.stok;
+                      end;
+               end;
+               2:begin
+                      if(bantu^.info.nama_obat=cari) then
+                      begin
+                           ketemu:=true;
+                           id_obat:=bantu^.info.id_obat;
+                           nama:=bantu^.info.nama_obat;
+                           jenis:=bantu^.info.jenis;
+                           harga:=bantu^.info.harga;
+                           stok:=bantu^.info.stok;
+                      end;
+               end;
+               end;
+                bantu:=bantu^.next;
+          end;
+          clrscr;
+          bersihin;
+          kotak(4,50,2,14,BLUE,WHITE,'Hasil');
+          if(ketemu=true) then
+          begin
+               gotoxy(8,5);writeln('Data Yang Dicari : ');
+               gotoxy(8,6);write('ID Obat    : ',id_obat);
+               gotoxy(8,7);write('Nama Obat  : ',nama);
+               gotoxy(8,8);write('Jenis      : ',jenis);
+               gotoxy(8,9);write('Harga      : ',harga);
+               gotoxy(8,10);write('Stok       : ',stok);
+          end
+          else
+          begin
+              gotoxy(8,5);write('Data Tidak Ditemukan!');
+          end;
+          gotoxy(8,12);write('Tekan Enter Untuk Kembali.');read;
+     end;
+end;
 
+procedure menu_pencarian;
+var
+   bantu:PDataObat;
+   pil:integer;
+   cari:string;
+begin
+     clrscr;
+     bersihin;
+     kotak(4,40,2,12,BLUE,WHITE,'Pencarian Data Obat');
+     pemisah(4,40,4);
+     gotoxy(6,5);writeln('Cari Berdasarkan : ');
+     gotoxy(6,6);writeln('1. ID Obat');
+     gotoxy(6,7);writeln('2. Nama Obat');
+     gotoxy(6,9);write('Pilihan Anda (1-2)?: ');readln(pil);
+     gotoxy(6,10);write('Masukan Keyword : ');readln(cari);
+     case pil of
+          1: pencarian(awal,akhir,1,cari);
+          2: pencarian(awal,akhir,2,cari);
+     end;
+end;
+
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -488,7 +575,7 @@ var
    ketemu : boolean;
 begin
      bersihin;
-     kotak(4,65,2,20,BLUE,WHITE,'Ubah Data Anggota');
+     kotak(4,65,2,20,BLUE,WHITE,'Ubah Data Obat');
      pemisah(4,65,4);
 
      bantu:=awal;
@@ -890,9 +977,10 @@ begin
      Tmenu[3]:=' '+#254+' Hapus Data Obat    ';
      Tmenu[4]:=' '+#254+' Pengurutan         ';
      Tmenu[5]:=' '+#254+' Tampilkan Data     ';
-     Tmenu[6]:=' '+#254+' Hapus Semua Data   ';
-     Tmenu[7]:=' '+#254+' Simpan Ke File     ';
-     Tmenu[8]:=' '+#254+' Keluar             ';
+     Tmenu[6]:=' '+#254+' Pencarian Data     ';
+     Tmenu[7]:=' '+#254+' Hapus Semua Data   ';
+     Tmenu[8]:=' '+#254+' Simpan Ke File     ';
+     Tmenu[9]:=' '+#254+' Keluar             ';
 end;
 
 procedure tulis_menu;
@@ -924,8 +1012,9 @@ begin
           3:pilih_ObatHapus;
           4:menu_pengurutan;
           5:tampil_dataObat(awal,akhir);
-          6:hancurindata(awal,akhir);
-          7:simpansemuafile;
+          6:menu_pencarian;
+          7:hancurindata(awal,akhir);
+          8:simpansemuafile;
 
      end;
 end;
