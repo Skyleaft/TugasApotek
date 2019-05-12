@@ -488,7 +488,7 @@ var
    ketemu : boolean;
 begin
      bersihin;
-     kotak(4,65,2,20,BLUE,WHITE,'Ubah Data Anggota');
+     kotak(4,65,2,20,BLUE,WHITE,'Ubah Data Obat');
      pemisah(4,65,4);
 
      bantu:=awal;
